@@ -1003,8 +1003,8 @@ textarea { border-radius: var(--radius-md); resize: vertical; min-height: 110px;
   cursor: default;
 }
 .brand-card:hover { box-shadow: var(--shadow-md); border-color: rgba(43,122,158,.3); transform: translateY(-2px); }
-.brand-card img { max-width: 110px; max-height: 48px; object-fit: contain; filter: grayscale(1) opacity(.7); transition: filter var(--transition); }
-.brand-card:hover img { filter: none; }
+.brand-card img { max-width: 110px; max-height: 48px; object-fit: contain; transition: filter var(--transition); }
+.brand-card:hover img { filter: brightness(1.05); }
 .brand-card-name { font-weight: 700; font-size: .9rem; letter-spacing: .05em; color: var(--color-muted); text-transform: uppercase; }
 
 /* ── Newsletter prominente (sección mid-page) ── */

@@ -1,7 +1,7 @@
 // Cart management — persists in localStorage
 (function () {
   const STORAGE_KEY = 'carbec_cart';
-  const WHATSAPP_NUMBER = '18095777989';
+  const WHATSAPP_NUMBER = '18294713805';
 
   function load() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
