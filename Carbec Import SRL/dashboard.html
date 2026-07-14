@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mi cuenta — Carbec Import S.R.L</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+      .dash-layout { display: flex; min-height: calc(100vh - 64px); }
+
+      .dash-sidebar {
+        width: 220px;
+        flex-shrink: 0;
+        background: var(--color-surface);
+        border-right: 1px solid var(--color-border);
+        padding: 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: .35rem;
+      }
+      .dash-sidebar h3 { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--color-muted); margin: .75rem 0 .3rem .5rem; }
+      .dash-nav-btn {
+        display: flex; align-items: center; gap: .6rem;
+        width: 100%; background: none; border: none;
+        padding: .55rem .75rem; border-radius: var(--radius-md);
+        font-family: inherit; font-size: .9rem; font-weight: 500;
+        color: var(--color-muted); cursor: pointer; text-align: left;
+        transition: background .2s, color .2s;
+      }
+      .dash-nav-btn:hover { background: var(--color-primary-light); color: var(--color-primary-dark); }
+      .dash-nav-btn.active { background: var(--color-primary); color: #fff; }
+
+      .dash-main { flex: 1; padding: 2rem; overflow-y: auto; }
+      .dash-section { display: none; }
+      .dash-section.active { display: block; }
+
+      .dash-section h2 { margin: 0 0 1.5rem; font-size: 1.35rem; }
+
+      .welcome-banner {
+        background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+        color: #fff; border-radius: var(--radius-lg); padding: 1.5rem 2rem;
+        margin-bottom: 1.75rem; display: flex; justify-content: space-between; align-items: center;
+      }
+      .welcome-banner h2 { margin: 0 0 .3rem; font-size: 1.3rem; }
+      .welcome-banner p  { margin: 0; opacity: .8; font-size: .9rem; }
+
+      .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+      .mini-stat {
+        background: var(--color-surface); border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg); padding: 1.1rem 1.25rem;
+        box-shadow: var(--shadow-sm);
+      }
+      .mini-stat .num  { font-size: 1.6rem; font-weight: 800; color: var(--color-primary-dark); line-height: 1; }
+      .mini-stat .lbl  { font-size: .8rem; color: var(--color-muted); margin-top: .3rem; }
+
+      .order-card {
+        background: var(--color-surface); border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg); padding: 1.25rem 1.4rem;
+        margin-bottom: 1rem; box-shadow: var(--shadow-sm);
+      }
+      .order-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .75rem; flex-wrap: wrap; gap: .5rem; }
+      .order-id   { font-size: .78rem; color: var(--color-muted); font-family: monospace; }
+      .order-date { font-size: .8rem; color: var(--color-muted); }
+
+      .status-badge {
+        display: inline-flex; align-items: center; gap: .3rem;
+        border-radius: 999px; padding: .2rem .65rem;
+        font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+      }
+      .status-pendiente  { background: #fef3c7; color: #92400e; }
+      .status-confirmado { background: #dbeafe; color: #1e40af; }
+      .status-en_proceso { background: #ede9fe; color: #5b21b6; }
+      .status-facturado  { background: #d1fae5; color: #065f46; }
+      .status-enviado    { background: #d1fae5; color: #065f46; }
+      .status-entregado  { background: #d1fae5; color: #166534; }
+      .status-cancelado  { background: #fee2e2; color: #991b1b; }
+
+      .order-items-list { list-style: none; padding: 0; margin: .75rem 0 0; border-top: 1px solid var(--color-border); padding-top: .75rem; display: flex; flex-direction: column; gap: .5rem; }
+      .order-item { display: flex; align-items: center; gap: .6rem; font-size: .87rem; }
+      .order-item img { width: 38px; height: 38px; object-fit: contain; border-radius: var(--radius-sm); background: var(--color-bg); }
+      .order-item-name { font-weight: 600; }
+      .order-item-qty  { color: var(--color-muted); font-size: .8rem; }
+
+      .ticket-card {
+        background: var(--color-surface); border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg); padding: 1.1rem 1.25rem;
+        margin-bottom: .75rem;
+      }
+      .ticket-card h4 { margin: 0 0 .3rem; font-size: .95rem; }
+      .ticket-card p  { margin: 0; font-size: .85rem; color: var(--color-muted); }
+
+      .new-ticket-form {
+        background: var(--color-surface); border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg); padding: 1.4rem;
+        margin-top: 1.5rem;
+      }
+      .new-ticket-form h3 { margin: 0 0 1rem; font-size: 1rem; }
+
+      .profile-card {
+        background: var(--color-surface); border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg); padding: 1.75rem;
+        max-width: 560px;
+      }
+
+      .loading { text-align: center; padding: 3rem; color: var(--color-muted); font-size: .95rem; }
+      .empty-msg { text-align: center; color: var(--color-muted); padding: 2rem; font-size: .92rem; }
+
+      @media (max-width: 720px) {
+        .dash-layout { flex-direction: column; }
+        .dash-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; padding: .75rem; border-right: none; border-bottom: 1px solid var(--color-border); }
+        .dash-sidebar h3 { display: none; }
+        .dash-main { padding: 1rem; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand">
+          <img src="img/logo.jpg" alt="Carbec Import S.R.L" class="brand-logo" />
+          <div class="brand-text">
+            <span class="brand-name">CARBEC</span>
+            <span class="brand-subtitle">Import S.R.L.</span>
+          </div>
+        </a>
+        <nav class="nav">
+          <a href="index.html" class="nav-link">Inicio</a>
+          <a href="products.html" class="nav-link">Productos</a>
+          <button id="cart-nav-btn" aria-label="Carrito">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Carrito
+            <span id="cart-badge"></span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <div class="dash-layout">
+
+      <!-- Sidebar -->
+      <aside class="dash-sidebar">
+        <h3>Mi cuenta</h3>
+        <button class="dash-nav-btn active" data-section="inicio">🏠 Inicio</button>
+        <button class="dash-nav-btn" data-section="pedidos">📦 Mis pedidos</button>
+        <button class="dash-nav-btn" data-section="tickets">💬 Soporte</button>
+        <h3>Configuración</h3>
+        <button class="dash-nav-btn" data-section="perfil">👤 Mi perfil</button>
+        <button class="dash-nav-btn" onclick="window.api.logout()" style="color:#dc2626;margin-top:auto;">← Cerrar sesión</button>
+      </aside>
+
+      <!-- Main -->
+      <main class="dash-main">
+
+        <!-- Inicio -->
+        <div id="s-inicio" class="dash-section active">
+          <div id="welcome-banner" class="welcome-banner">
+            <div>
+              <h2>Bienvenido/a, <span id="welcome-name">—</span></h2>
+              <p>Aquí puedes ver tus pedidos y contactar soporte.</p>
+            </div>
+            <a href="products.html" class="btn btn-white" style="background:#fff;color:var(--color-primary-dark);font-weight:700;flex-shrink:0;">Ver catálogo →</a>
+          </div>
+          <div class="stats-row" id="stats-row">
+            <div class="mini-stat"><div class="num" id="stat-total">—</div><div class="lbl">Pedidos totales</div></div>
+            <div class="mini-stat"><div class="num" id="stat-pending">—</div><div class="lbl">Pendientes</div></div>
+            <div class="mini-stat"><div class="num" id="stat-delivered">—</div><div class="lbl">Entregados</div></div>
+          </div>
+          <h2>Últimos pedidos</h2>
+          <div id="recent-orders"><div class="loading">Cargando...</div></div>
+        </div>
+
+        <!-- Pedidos -->
+        <div id="s-pedidos" class="dash-section">
+          <h2>Mis pedidos</h2>
+          <div id="orders-list"><div class="loading">Cargando...</div></div>
+        </div>
+
+        <!-- Tickets -->
+        <div id="s-tickets" class="dash-section">
+          <h2>Soporte</h2>
+          <div id="tickets-list"></div>
+
+          <div class="new-ticket-form">
+            <h3>Abrir nuevo ticket</h3>
+            <form id="ticket-form" class="auth-form" style="max-width:500px;" novalidate>
+              <div id="ticket-error" style="display:none;background:#fef2f2;border:1px solid #fecaca;color:#dc2626;border-radius:6px;padding:.6rem .85rem;font-size:.85rem;"></div>
+              <div class="form-group">
+                <label for="t-subject">Asunto</label>
+                <input id="t-subject" type="text" placeholder="Describe brevemente tu consulta" required />
+              </div>
+              <div class="form-group">
+                <label for="t-desc">Descripción</label>
+                <textarea id="t-desc" rows="3" placeholder="Proporciona más detalles..." style="border-radius:8px;"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:auto;align-self:flex-start;" id="ticket-btn">Enviar ticket</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Perfil -->
+        <div id="s-perfil" class="dash-section">
+          <h2>Mi perfil</h2>
+          <div class="profile-card">
+            <form id="profile-form" class="auth-form" novalidate>
+              <div id="profile-msg" style="display:none;border-radius:6px;padding:.6rem .85rem;font-size:.85rem;"></div>
+              <div class="form-group">
+                <label for="p-name">Nombre completo</label>
+                <input id="p-name" type="text" required />
+              </div>
+              <div class="form-group">
+                <label for="p-email">Correo electrónico</label>
+                <input id="p-email" type="email" disabled style="opacity:.6;cursor:not-allowed;" />
+              </div>
+              <div class="form-group">
+                <label for="p-phone">Teléfono</label>
+                <input id="p-phone" type="tel" placeholder="809-XXX-XXXX" />
+              </div>
+              <div class="form-group">
+                <label for="p-address">Dirección de entrega</label>
+                <input id="p-address" type="text" placeholder="Calle, número, sector..." />
+              </div>
+              <div class="form-group">
+                <label for="p-city">Ciudad / Municipio</label>
+                <input id="p-city" type="text" />
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:auto;" id="profile-btn">Guardar cambios</button>
+            </form>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+      // Guardar requisito: solo usuarios autenticados
+      if (!window.api.isLoggedIn()) window.location.href = _url('/login.html');
+
+      const user = window.api.getUser();
+      document.getElementById('welcome-name').textContent = user?.full_name?.split(' ')[0] || 'Cliente';
+
+      // ── Navegación ──
+      const sections = document.querySelectorAll('.dash-section');
+      const navBtns  = document.querySelectorAll('.dash-nav-btn[data-section]');
+
+      function showSection(name) {
+        sections.forEach(s => s.classList.toggle('active', s.id === `s-${name}`));
+        navBtns.forEach(b => b.classList.toggle('active', b.dataset.section === name));
+      }
+
+      navBtns.forEach(btn => btn.addEventListener('click', () => showSection(btn.dataset.section)));
+
+      // ── Helpers ──
+      function formatDate(iso) {
+        return new Date(iso).toLocaleDateString('es-DO', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+
+      function statusLabel(s) {
+        const map = { pendiente:'Pendiente', confirmado:'Confirmado', en_proceso:'En proceso',
+                      facturado:'Facturado', enviado:'Enviado', entregado:'Entregado', cancelado:'Cancelado' };
+        return map[s] || s;
+      }
+
+      function orderCardHTML(order) {
+        const itemsHTML = (order.order_items || []).map(i => `
+          <li class="order-item">
+            <img src="${i.product_image}" onerror="this.style.display='none'" alt="${i.product_name}" />
+            <span>
+              <span class="order-item-name">${i.product_name}</span>
+              <span class="order-item-qty"> ×${i.quantity}</span>
+            </span>
+          </li>`).join('');
+
+        return `
+          <div class="order-card">
+            <div class="order-card-header">
+              <div>
+                <div class="order-id">Pedido #${order.id.slice(0,8).toUpperCase()}</div>
+                <div class="order-date">${formatDate(order.created_at)}</div>
+              </div>
+              <span class="status-badge status-${order.status}">${statusLabel(order.status)}</span>
+            </div>
+            ${order.order_items?.length ? `<ul class="order-items-list">${itemsHTML}</ul>` : ''}
+            ${order.notes ? `<p style="font-size:.82rem;color:var(--color-muted);margin:.65rem 0 0;">Nota: ${order.notes}</p>` : ''}
+          </div>`;
+      }
+
+      // ── Cargar pedidos ──
+      async function loadOrders() {
+        try {
+          const orders = await window.api.getOrders();
+
+          // Stats
+          document.getElementById('stat-total').textContent    = orders.length;
+          document.getElementById('stat-pending').textContent  = orders.filter(o => o.status === 'pendiente').length;
+          document.getElementById('stat-delivered').textContent= orders.filter(o => o.status === 'entregado').length;
+
+          // Recientes (inicio)
+          const recent = orders.slice(0, 3);
+          document.getElementById('recent-orders').innerHTML = recent.length
+            ? recent.map(orderCardHTML).join('')
+            : '<p class="empty-msg">Aún no has realizado ningún pedido. <a href="products.html">Explorar catálogo →</a></p>';
+
+          // Lista completa
+          document.getElementById('orders-list').innerHTML = orders.length
+            ? orders.map(orderCardHTML).join('')
+            : '<p class="empty-msg">No tienes pedidos todavía.</p>';
+
+        } catch (err) {
+          document.getElementById('recent-orders').innerHTML = `<p class="empty-msg" style="color:#dc2626;">${err.message}</p>`;
+        }
+      }
+
+      // ── Cargar tickets ──
+      async function loadTickets() {
+        try {
+          const tickets = await window.api.getTickets();
+          document.getElementById('tickets-list').innerHTML = tickets.length
+            ? tickets.map(t => `
+              <div class="ticket-card">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.4rem;">
+                  <h4>${t.subject}</h4>
+                  <span class="status-badge status-${t.status.replace('_','-')}" style="font-size:.72rem;">${t.status.replace(/_/g,' ')}</span>
+                </div>
+                <p>${t.description || ''}</p>
+                <p style="font-size:.75rem;color:var(--color-muted);margin-top:.4rem;">${formatDate(t.created_at)}</p>
+              </div>`).join('')
+            : '<p class="empty-msg">No tienes tickets de soporte abiertos.</p>';
+        } catch {
+          document.getElementById('tickets-list').innerHTML = '';
+        }
+      }
+
+      // ── Cargar perfil ──
+      async function loadProfile() {
+        try {
+          const profile = await window.api.getProfile();
+          document.getElementById('p-name').value    = profile.full_name || '';
+          document.getElementById('p-email').value   = profile.email || '';
+          document.getElementById('p-phone').value   = profile.phone || '';
+          document.getElementById('p-address').value = profile.address || '';
+          document.getElementById('p-city').value    = profile.city || '';
+        } catch {}
+      }
+
+      // ── Enviar ticket ──
+      document.getElementById('ticket-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn   = document.getElementById('ticket-btn');
+        const errEl = document.getElementById('ticket-error');
+        const subject = document.getElementById('t-subject').value.trim();
+        const desc    = document.getElementById('t-desc').value.trim();
+        if (!subject) { errEl.textContent='El asunto es requerido'; errEl.style.display='block'; return; }
+
+        errEl.style.display = 'none';
+        btn.disabled = true; btn.textContent = 'Enviando...';
+
+        try {
+          await window.api.createTicket({ subject, description: desc });
+          document.getElementById('t-subject').value = '';
+          document.getElementById('t-desc').value    = '';
+          await loadTickets();
+          btn.textContent = '✓ Enviado';
+          setTimeout(() => { btn.disabled=false; btn.textContent='Enviar ticket'; }, 2000);
+        } catch (err) {
+          errEl.textContent = err.message; errEl.style.display = 'block';
+          btn.disabled = false; btn.textContent = 'Enviar ticket';
+        }
+      });
+
+      // ── Guardar perfil ──
+      document.getElementById('profile-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn   = document.getElementById('profile-btn');
+        const msgEl = document.getElementById('profile-msg');
+
+        btn.disabled = true; btn.textContent = 'Guardando...';
+        try {
+          await window.api.updateProfile({
+            full_name: document.getElementById('p-name').value.trim(),
+            phone:     document.getElementById('p-phone').value.trim(),
+            address:   document.getElementById('p-address').value.trim(),
+            city:      document.getElementById('p-city').value.trim()
+          });
+          msgEl.style.cssText = 'display:block;background:#d1fae5;border:1px solid #6ee7b7;color:#065f46;border-radius:6px;padding:.6rem .85rem;font-size:.85rem;';
+          msgEl.textContent = '✓ Perfil actualizado correctamente';
+          setTimeout(() => msgEl.style.display='none', 3000);
+        } catch (err) {
+          msgEl.style.cssText = 'display:block;background:#fef2f2;border:1px solid #fecaca;color:#dc2626;border-radius:6px;padding:.6rem .85rem;font-size:.85rem;';
+          msgEl.textContent = err.message;
+        }
+        btn.disabled = false; btn.textContent = 'Guardar cambios';
+      });
+
+      // ── Mensaje de bienvenida ──
+      if (new URLSearchParams(location.search).get('welcome') === '1') {
+        showSection('inicio');
+      }
+
+      // Init
+      loadOrders();
+      loadTickets();
+      loadProfile();
+    </script>
+  </body>
+</html>

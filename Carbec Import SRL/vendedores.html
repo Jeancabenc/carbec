@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Portal de Vendedores — Carbec Import S.R.L</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+      .vendor-page { padding: 2.5rem 0 4rem; }
+      .vendor-header { margin-bottom: 2rem; }
+      .vendor-header h1 { margin: 0 0 .4rem; font-size: 1.7rem; }
+      .vendor-header p  { margin: 0; color: var(--color-muted); }
+
+      .vendor-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.5rem; align-items: start; }
+
+      .vcard { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); }
+      .vcard h3 { margin: 0 0 1.1rem; font-size: 1rem; font-weight: 700; color: var(--color-primary-dark); display: flex; align-items: center; gap: .5rem; border-bottom: 1px solid var(--color-border); padding-bottom: .65rem; }
+
+      /* Meetings */
+      .meeting-list { display: flex; flex-direction: column; gap: .75rem; }
+      .meeting-item { display: flex; gap: .85rem; align-items: flex-start; }
+      .meeting-date-block { background: var(--color-primary); color: #fff; border-radius: var(--radius-md); padding: .45rem .65rem; text-align: center; min-width: 52px; flex-shrink: 0; }
+      .meeting-date-block .day   { font-size: 1.1rem; font-weight: 800; line-height: 1; }
+      .meeting-date-block .month { font-size: .62rem; text-transform: uppercase; letter-spacing: .05em; opacity: .85; }
+      .meeting-info { flex: 1; }
+      .meeting-info .title { font-weight: 700; font-size: .9rem; }
+      .meeting-info .meta  { font-size: .78rem; color: var(--color-muted); margin-top: .2rem; display: flex; gap: .75rem; flex-wrap: wrap; }
+      .meeting-info .meta span { display: flex; align-items: center; gap: .25rem; }
+      .join-btn { display: inline-flex; align-items: center; gap: .35rem; font-size: .78rem; font-weight: 600; color: var(--color-primary); background: var(--color-primary-light); border: none; border-radius: 999px; padding: .25rem .65rem; cursor: pointer; text-decoration: none; margin-top: .35rem; transition: background .2s; font-family: inherit; }
+      .join-btn:hover { background: rgba(43,122,158,.2); }
+
+      /* Announcements */
+      .announce-list { display: flex; flex-direction: column; gap: .85rem; }
+      .announce-item { border-left: 3px solid var(--color-primary); padding-left: .85rem; }
+      .announce-item .badge { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--color-accent); margin-bottom: .25rem; }
+      .announce-item .text  { font-size: .88rem; color: var(--color-text); line-height: 1.45; }
+      .announce-item .date  { font-size: .75rem; color: var(--color-muted); margin-top: .25rem; }
+
+      /* Resources */
+      .resource-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .55rem; }
+      .resource-list li a { display: flex; align-items: center; gap: .5rem; font-size: .88rem; color: var(--color-primary-dark); text-decoration: none; padding: .5rem .6rem; border-radius: var(--radius-sm); transition: background .2s; }
+      .resource-list li a:hover { background: var(--color-primary-light); }
+
+      /* Forum / Topics */
+      .topic-list { display: flex; flex-direction: column; gap: .75rem; }
+      .topic-item { display: flex; gap: .75rem; align-items: center; padding: .65rem; background: var(--color-bg); border-radius: var(--radius-md); }
+      .topic-icon { width: 36px; height: 36px; background: var(--color-primary-light); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+      .topic-body { flex: 1; min-width: 0; }
+      .topic-body .title { font-weight: 600; font-size: .88rem; }
+      .topic-body .sub   { font-size: .75rem; color: var(--color-muted); }
+      .topic-count { font-size: .75rem; color: var(--color-muted); flex-shrink: 0; }
+
+      /* Admin panel para vendedores */
+      .admin-post-form { background: var(--color-bg); border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem; display: none; }
+      .admin-post-form.open { display: block; }
+
+      @media (max-width: 900px) {
+        .vendor-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand">
+          <img src="img/logo.jpg" alt="Carbec Import S.R.L" class="brand-logo" />
+          <div class="brand-text">
+            <span class="brand-name">CARBEC</span>
+            <span class="brand-subtitle">Import S.R.L.</span>
+          </div>
+        </a>
+        <nav class="nav">
+          <a href="index.html" class="nav-link">Inicio</a>
+          <a href="products.html" class="nav-link">Productos</a>
+          <a href="index.html#contacto" class="nav-link">Contacto</a>
+          <button id="cart-nav-btn" aria-label="Carrito">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Carrito
+            <span id="cart-badge"></span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="vendor-page">
+        <div class="container">
+
+          <div class="vendor-header">
+            <h1>Portal de vendedores</h1>
+            <p>Reuniones, anuncios, temas y recursos internos del equipo comercial.</p>
+          </div>
+
+          <!-- Acceso restringido (se muestra si no hay sesión) -->
+          <div id="access-denied" style="display:none;" class="empty-state">
+            <h2>Acceso restringido</h2>
+            <p>Este portal es exclusivo para el equipo de vendedores de Carbec.</p>
+            <a href="login.html" class="btn btn-primary">Iniciar sesión →</a>
+          </div>
+
+          <div id="vendor-content" style="display:none;">
+
+            <!-- Banner bienvenida -->
+            <div style="background:linear-gradient(135deg,var(--color-primary-dark),var(--color-primary));border-radius:var(--radius-xl);padding:1.75rem 2rem;color:#fff;margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+              <div>
+                <div style="font-size:.78rem;opacity:.75;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;">Equipo Carbec</div>
+                <h2 style="margin:0 0 .3rem;font-size:1.25rem;">Bienvenido/a, <span id="vendor-name">—</span></h2>
+                <p style="margin:0;opacity:.8;font-size:.88rem;">Portal interno del equipo comercial.</p>
+              </div>
+              <a href="dashboard.html" class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.35);flex-shrink:0;">Mi cuenta →</a>
+            </div>
+
+            <div class="vendor-grid">
+
+              <!-- Columna izquierda -->
+              <div style="display:flex;flex-direction:column;gap:1.5rem;">
+
+                <!-- Próximas reuniones -->
+                <div class="vcard">
+                  <h3>📅 Próximas reuniones</h3>
+                  <div class="meeting-list" id="meetings-list">
+                    <!-- Admin puede editar las reuniones abajo en el script -->
+                    <div class="meeting-item">
+                      <div class="meeting-date-block"><div class="day">18</div><div class="month">Jul</div></div>
+                      <div class="meeting-info">
+                        <div class="title">Reunión semanal de ventas</div>
+                        <div class="meta">
+                          <span>🕙 10:00 AM</span>
+                          <span>📍 Oficina principal, Moca</span>
+                        </div>
+                        <a href="#" class="join-btn">📎 Ver agenda</a>
+                      </div>
+                    </div>
+                    <div class="meeting-item">
+                      <div class="meeting-date-block"><div class="day">25</div><div class="month">Jul</div></div>
+                      <div class="meeting-info">
+                        <div class="title">Revisión de catálogo — nuevos productos</div>
+                        <div class="meta">
+                          <span>🕙 9:00 AM</span>
+                          <span>📍 Sala de reuniones</span>
+                        </div>
+                        <a href="#" class="join-btn">📎 Ver agenda</a>
+                      </div>
+                    </div>
+                    <div class="meeting-item">
+                      <div class="meeting-date-block"><div class="day">01</div><div class="month">Ago</div></div>
+                      <div class="meeting-info">
+                        <div class="title">Capacitación: nuevo sistema de pedidos</div>
+                        <div class="meta">
+                          <span>🕙 2:00 PM</span>
+                          <span>🌐 Virtual (enlace por WhatsApp)</span>
+                        </div>
+                        <a href="#" class="join-btn">🔗 Unirse</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Temas de discusión -->
+                <div class="vcard">
+                  <h3>💬 Temas del equipo</h3>
+                  <div class="topic-list">
+                    <div class="topic-item">
+                      <div class="topic-icon">📊</div>
+                      <div class="topic-body">
+                        <div class="title">Meta de ventas julio 2026</div>
+                        <div class="sub">Actualizado hace 2 días</div>
+                      </div>
+                      <div class="topic-count">3 comentarios</div>
+                    </div>
+                    <div class="topic-item">
+                      <div class="topic-icon">📦</div>
+                      <div class="topic-body">
+                        <div class="title">Nuevos productos ferretería Q3</div>
+                        <div class="sub">Actualizado hace 5 días</div>
+                      </div>
+                      <div class="topic-count">7 comentarios</div>
+                    </div>
+                    <div class="topic-item">
+                      <div class="topic-icon">🚛</div>
+                      <div class="topic-body">
+                        <div class="title">Procedimiento de entregas zona norte</div>
+                        <div class="sub">Actualizado hace 1 semana</div>
+                      </div>
+                      <div class="topic-count">2 comentarios</div>
+                    </div>
+                    <div class="topic-item">
+                      <div class="topic-icon">💡</div>
+                      <div class="topic-body">
+                        <div class="title">Ideas para próxima temporada de ofertas</div>
+                        <div class="sub">Nuevo</div>
+                      </div>
+                      <div class="topic-count">0 comentarios</div>
+                    </div>
+                  </div>
+                  <p style="font-size:.78rem;color:var(--color-muted);margin-top:1rem;text-align:center;">
+                    Sección de foro completo — próximamente disponible.
+                  </p>
+                </div>
+
+              </div>
+
+              <!-- Columna derecha -->
+              <div style="display:flex;flex-direction:column;gap:1.5rem;">
+
+                <!-- Anuncios -->
+                <div class="vcard">
+                  <h3>📢 Anuncios</h3>
+
+                  <!-- Formulario para admins -->
+                  <div id="admin-announce-toggle" style="display:none;margin-bottom:1rem;">
+                    <button class="btn btn-outline" style="font-size:.82rem;width:100%;" onclick="togglePostForm()">+ Publicar anuncio</button>
+                    <div class="admin-post-form" id="post-form">
+                      <div class="form-group">
+                        <label>Título / Etiqueta</label>
+                        <input id="ann-badge" type="text" placeholder="Ej. Importante" />
+                      </div>
+                      <div class="form-group">
+                        <label>Mensaje</label>
+                        <textarea id="ann-text" rows="3" placeholder="Escribe el anuncio..."></textarea>
+                      </div>
+                      <button class="btn btn-primary" style="font-size:.82rem;" onclick="postAnnouncement()">Publicar</button>
+                    </div>
+                  </div>
+
+                  <div class="announce-list" id="announce-list">
+                    <div class="announce-item">
+                      <div class="badge">Importante</div>
+                      <div class="text">Sistema de pedidos en línea ya disponible. Los clientes pueden realizar pedidos directamente desde la página web.</div>
+                      <div class="date">10 Jul 2026</div>
+                    </div>
+                    <div class="announce-item">
+                      <div class="badge">Productos</div>
+                      <div class="text">Nuevo lote de productos de ferretería disponible en catálogo. Revisar sección Ferretería para ver las novedades.</div>
+                      <div class="date">5 Jul 2026</div>
+                    </div>
+                    <div class="announce-item">
+                      <div class="badge">Reunión</div>
+                      <div class="text">Reunión del 18 de julio confirmada. Preparar reporte de ventas de junio para presentación.</div>
+                      <div class="date">3 Jul 2026</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Recursos -->
+                <div class="vcard">
+                  <h3>📁 Recursos y documentos</h3>
+                  <ul class="resource-list">
+                    <li><a href="products.html" target="_blank">📋 Catálogo completo de productos</a></li>
+                    <li><a href="#" onclick="alert('Próximamente disponible')">📊 Lista de precios vigente</a></li>
+                    <li><a href="#" onclick="alert('Próximamente disponible')">📝 Formulario de pedido interno</a></li>
+                    <li><a href="#" onclick="alert('Próximamente disponible')">🗺 Zonas de entrega</a></li>
+                    <li><a href="#" onclick="alert('Próximamente disponible')">📞 Directorio del equipo</a></li>
+                    <li><a href="https://wa.me/18095777989" target="_blank">💬 WhatsApp de operaciones</a></li>
+                  </ul>
+                </div>
+
+                <!-- Contacto rápido -->
+                <div class="vcard" style="background:var(--color-primary-xlt);border-color:rgba(43,122,158,.2);">
+                  <h3>📞 Contacto interno</h3>
+                  <div style="display:flex;flex-direction:column;gap:.5rem;font-size:.88rem;">
+                    <div><strong>Operaciones:</strong> <a href="tel:+18095777989" style="color:var(--color-primary);">809-577-7989</a></div>
+                    <div><strong>Gerencia:</strong> <a href="https://wa.me/18095777989" target="_blank" style="color:var(--color-primary);">WhatsApp directo</a></div>
+                    <div><strong>Admin sistema:</strong> <a href="admin/index.html" style="color:var(--color-accent);font-weight:600;">Panel de admin →</a></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-bottom" style="border:none;padding:1.25rem 0 0;">
+          <span>© <span id="year"></span> Carbec Import S.R.L. — Portal interno</span>
+          <a href="index.html" style="color:rgba(255,255,255,.6);font-size:.82rem;">← Volver al sitio público</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!window.api.isLoggedIn()) {
+          document.getElementById('access-denied').style.display = 'block';
+        } else {
+          document.getElementById('vendor-content').style.display = 'block';
+          const user = window.api.getUser();
+          document.getElementById('vendor-name').textContent = user?.full_name?.split(' ')[0] || 'Vendedor';
+
+          if (user?.is_admin) {
+            document.getElementById('admin-announce-toggle').style.display = 'block';
+          }
+        }
+      });
+
+      function togglePostForm() {
+        document.getElementById('post-form').classList.toggle('open');
+      }
+
+      function postAnnouncement() {
+        const badge = document.getElementById('ann-badge').value.trim() || 'Anuncio';
+        const text  = document.getElementById('ann-text').value.trim();
+        if (!text) return;
+
+        const today = new Date().toLocaleDateString('es-DO', { day:'2-digit', month:'short', year:'numeric' });
+        const list  = document.getElementById('announce-list');
+        const item  = document.createElement('div');
+        item.className = 'announce-item';
+        item.innerHTML = `
+          <div class="badge">${badge}</div>
+          <div class="text">${text}</div>
+          <div class="date">${today}</div>`;
+        list.prepend(item);
+
+        document.getElementById('ann-badge').value = '';
+        document.getElementById('ann-text').value  = '';
+        document.getElementById('post-form').classList.remove('open');
+      }
+    </script>
+  </body>
+</html>

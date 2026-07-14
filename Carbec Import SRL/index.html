@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Carbec Import S.R.L — Importación y Distribución</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Carbec Import S.R.L — empresa de importación y distribución de productos de calidad en República Dominicana." />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+
+    <!-- ── Announcement modal ── -->
+    <div id="promo-overlay">
+      <div class="promo-modal">
+        <button class="promo-close" onclick="closePromo()">✕</button>
+        <div class="promo-header">
+          <div class="tag">¡Oferta especial!</div>
+          <h2>Productos del mes con precio especial</h2>
+          <p>Aprovecha nuestras promociones mientras duren el stock.</p>
+        </div>
+        <div class="promo-body">
+          <div class="promo-product-list" id="promo-list"></div>
+          <div class="promo-actions">
+            <a href="products.html" class="btn btn-primary">Ver catálogo completo</a>
+            <button onclick="closePromo()" class="btn btn-secondary">Ahora no</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Masthead ── -->
+    <div class="site-masthead">
+      <div class="container site-masthead-inner">
+        <img src="img/logo.jpg" alt="Carbec Import S.R.L" class="masthead-logo" />
+        <div class="masthead-text">
+          <span class="masthead-name">Carbec</span>
+          <span class="masthead-sub">Import S.R.L. &nbsp;·&nbsp; Importación y Distribución · República Dominicana</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Header ── -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand">
+          <img src="img/logo.jpg" alt="Carbec Import S.R.L" class="brand-logo" />
+          <div class="brand-text">
+            <span class="brand-name">CARBEC</span>
+            <span class="brand-subtitle">Import S.R.L.</span>
+          </div>
+        </a>
+
+        <nav class="nav">
+          <a href="index.html" class="nav-link nav-link-active">Inicio</a>
+          <a href="products.html" class="nav-link">Productos</a>
+          <a href="#nosotros" class="nav-link">Nosotros</a>
+          <a href="#contacto" class="nav-link">Contacto</a>
+          <button id="cart-nav-btn" aria-label="Ver carrito">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Carrito
+            <span id="cart-badge"></span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- 1 ── Hero ── -->
+      <section class="section-hero">
+        <div class="container hero-inner">
+          <div class="hero-text">
+            <div class="hero-tag">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><circle cx="7" cy="7" r="1.5" fill="currentColor" stroke="none"/></svg>
+              República Dominicana
+            </div>
+            <h1>Importación y distribución <span>de confianza</span></h1>
+            <p>
+              Carbec Import S.R.L lleva productos seleccionados del mercado internacional
+              directamente a su negocio — con procesos claros, cumplimiento y enfoque
+              en una relación comercial duradera.
+            </p>
+            <div class="hero-actions">
+              <a href="products.html" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                Ver catálogo completo
+              </a>
+              <a href="#contacto" class="btn btn-secondary">Contactar a Carbec</a>
+            </div>
+
+            <div class="hero-stats">
+              <div class="stat-item">
+                <span class="stat-number">500+</span>
+                <span class="stat-label">Productos</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">8</span>
+                <span class="stat-label">Categorías</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">RD</span>
+                <span class="stat-label">Entrega local</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-card">
+            <h2>¿Por qué elegir Carbec Import S.R.L?</h2>
+            <p>Somos su aliado en importación con presencia en Moca, Espaillat, operando a nivel nacional.</p>
+            <ul class="hero-highlights">
+              <li>Catálogo amplio y en constante crecimiento</li>
+              <li>Productos de calidad a precio competitivo</li>
+              <li>Trato directo y seguimiento personalizado</li>
+              <li>Pedidos por WhatsApp — rápido y sencillo</li>
+              <li>Entrega y logística coordinada</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 ── Catálogo / Productos destacados ── -->
+      <section class="section" id="catalogo">
+        <div class="container">
+          <header class="section-header">
+            <h2>Productos destacados</h2>
+            <p>Una selección de nuestro catálogo de más de 500 artículos disponibles para su negocio.</p>
+          </header>
+
+          <div class="featured-grid" id="featured-grid"></div>
+
+          <div style="margin-top:2.5rem;">
+            <header class="section-header" style="margin-bottom:1rem;">
+              <h2>Explorar por categoría</h2>
+            </header>
+            <div class="category-grid" id="home-category-grid">
+              <a href="products.html?cat=Belleza" class="category-card">
+                <div class="category-card-icon">💄</div>
+                <div class="category-card-name">Belleza</div>
+              </a>
+              <a href="products.html?cat=Hogar" class="category-card">
+                <div class="category-card-icon">🏠</div>
+                <div class="category-card-name">Hogar</div>
+              </a>
+              <a href="products.html?cat=Ferretería" class="category-card">
+                <div class="category-card-icon">🔧</div>
+                <div class="category-card-name">Ferretería</div>
+              </a>
+              <a href="products.html?cat=Eventos" class="category-card">
+                <div class="category-card-icon">🎈</div>
+                <div class="category-card-name">Eventos</div>
+              </a>
+              <a href="products.html?cat=Cocina" class="category-card">
+                <div class="category-card-icon">🍳</div>
+                <div class="category-card-name">Cocina</div>
+              </a>
+              <a href="products.html" class="category-card">
+                <div class="category-card-icon">📋</div>
+                <div class="category-card-name">Ver todo</div>
+              </a>
+            </div>
+          </div>
+
+          <div class="catalog-cta" style="margin-top:2rem;">
+            <div>
+              <h2>Catálogo completo disponible</h2>
+              <p>Más de 500 productos listos para agregar a tu pedido.</p>
+            </div>
+            <a href="products.html" class="btn btn-white">Explorar catálogo →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 ── Newsletter prominente — mid-page ── -->
+      <section class="newsletter-prominent">
+        <div class="container newsletter-prominent-inner">
+          <div>
+            <p class="nl-eyebrow">📩 Suscríbete gratis</p>
+            <h2>¡No te pierdas nuestras<br>mejores ofertas!</h2>
+            <p>Recibe directamente en tu correo las novedades, promociones exclusivas y nuevos productos del catálogo Carbec.</p>
+            <ul class="nl-benefits">
+              <li>Ofertas y descuentos exclusivos para suscriptores</li>
+              <li>Novedades del catálogo antes que nadie</li>
+              <li>Alertas de productos en stock</li>
+              <li>Sin spam — solo lo que te importa</li>
+            </ul>
+          </div>
+          <div class="nl-form-card">
+            <h3>Quiero recibir ofertas</h3>
+            <p class="sub">Únete a clientes que ya reciben las mejores promociones de Carbec.</p>
+            <form id="newsletter-form" novalidate>
+              <input id="nl-email" type="email" placeholder="Tu correo electrónico" required />
+              <button type="submit" class="nl-submit">Suscribirme ahora →</button>
+              <p class="nl-privacy">🔒 Sin spam. Cancela cuando quieras.</p>
+              <div class="nl-success" id="newsletter-ok">✓ ¡Suscrito! Te avisaremos con las próximas ofertas.</div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 ── Por qué Carbec ── -->
+      <section class="section-alt">
+        <div class="container">
+          <header class="section-header">
+            <h2>¿Por qué elegir Carbec?</h2>
+            <p>Más de confianza, proceso y resultados para su negocio.</p>
+          </header>
+          <div class="features">
+            <article class="feature-card">
+              <div class="feature-icon">🚢</div>
+              <h3>Experiencia en importación</h3>
+              <p>Gestionamos compras internacionales con procesos claros desde la solicitud hasta la entrega al cliente final.</p>
+            </article>
+            <article class="feature-card">
+              <div class="feature-icon">📦</div>
+              <h3>Catálogo en expansión</h3>
+              <p>Más de 500 referencias en categorías de belleza, hogar, ferretería, eventos y más, con nuevos artículos frecuentes.</p>
+            </article>
+            <article class="feature-card">
+              <div class="feature-icon">🤝</div>
+              <h3>Relación de confianza</h3>
+              <p>Acompañamos a cada cliente con información, respuesta oportuna y enfoque en una relación comercial a largo plazo.</p>
+            </article>
+            <article class="feature-card">
+              <div class="feature-icon">📱</div>
+              <h3>Pedidos por WhatsApp</h3>
+              <p>Agrega productos al carrito desde el catálogo y envía tu pedido directamente por WhatsApp en segundos.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 ── Nuestras marcas ── -->
+      <section class="section">
+        <div class="container">
+          <header class="section-header">
+            <h2>Nuestras marcas</h2>
+            <p>Distribuimos productos de marcas reconocidas del mercado internacional.</p>
+          </header>
+          <div class="brands-grid">
+            <div class="brand-card"><img src="img/logos/01_CRUBEC_transparente.png" alt="Crubec" /></div>
+            <div class="brand-card"><img src="img/logos/02_POKER_transparente.png" alt="Poker" /></div>
+            <div class="brand-card"><img src="img/logos/03_RATAFIN_transparente.png" alt="Ratafin" /></div>
+            <div class="brand-card"><img src="img/logos/04_FREGABEN_transparente.png" alt="Fregaben" /></div>
+            <div class="brand-card"><img src="img/logos/05_LINCE_809_transparente.png" alt="Lince 809" /></div>
+            <div class="brand-card"><img src="img/logos/06_DON_PALITO_transparente.png" alt="Don Palito" /></div>
+            <div class="brand-card"><img src="img/logos/07_KANFOR_64_transparente.png" alt="Kanfor 64" /></div>
+            <div class="brand-card"><img src="img/logos/08_CARIOCA_transparente.png" alt="Carioca" /></div>
+            <div class="brand-card"><img src="img/logos/09_CHEARY_transparente.png" alt="Cheary" /></div>
+            <div class="brand-card"><img src="img/logos/10_PLAGAFIN_transparente.png" alt="Plagafin" /></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 ── Nosotros ── -->
+      <section class="section-alt" id="nosotros">
+        <div class="container two-column">
+          <div class="about-text">
+            <h2>Sobre Carbec Import S.R.L</h2>
+            <p>
+              Carbec Import S.R.L es una empresa dominicana enfocada en la importación
+              y distribución de productos seleccionados para distintos sectores. Operamos
+              desde Moca, Espaillat, con alcance a nivel nacional.
+            </p>
+            <p>
+              Nuestro compromiso es garantizar un servicio cercano, transparente y alineado
+              con las necesidades reales del mercado local — llevando productos de calidad
+              internacional a precios accesibles.
+            </p>
+            <a href="products.html" class="btn btn-outline" style="display:inline-flex;width:auto;">Ver nuestros productos →</a>
+          </div>
+
+          <div class="info-block">
+            <h3>¿Qué hacemos?</h3>
+            <ul>
+              <li>Selección y compra de productos en el extranjero.</li>
+              <li>Importación directa con gestión de logística.</li>
+              <li>Distribución y suministro para empresas y negocios.</li>
+              <li>Atención personalizada y seguimiento de pedidos.</li>
+              <li>Catálogo diversificado en múltiples categorías.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7 ── Contacto ── -->
+      <section class="section" id="contacto">
+        <div class="container contact-wrapper">
+          <div class="contact-info">
+            <h2>Contáctenos</h2>
+            <p>
+              Para información sobre productos, disponibilidad o condiciones comerciales,
+              comuníquese con nosotros por cualquiera de los siguientes medios.
+            </p>
+
+            <ul class="contact-list">
+              <li>
+                <div class="contact-icon">📞</div>
+                <div>
+                  <strong>Teléfono / WhatsApp</strong>
+                  <span>809-577-7989</span>
+                </div>
+              </li>
+              <li>
+                <div class="contact-icon">📍</div>
+                <div>
+                  <strong>Dirección</strong>
+                  <span>Autopista Ramón Cáceres, KM 3, Santa Rosa, Moca, Espaillat, República Dominicana</span>
+                </div>
+              </li>
+            </ul>
+
+            <a href="https://wa.me/18095777989?text=Hola%2C+me+comunico+desde+la+p%C3%A1gina+web+de+Carbec+Import.+Quisiera+m%C3%A1s+informaci%C3%B3n." target="_blank" class="btn btn-primary" style="display:inline-flex;width:auto;background:#25d366;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.551 4.1 1.513 5.824L.044 23.506a.5.5 0 00.613.613l5.682-1.469A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.935 0-3.758-.52-5.323-1.424l-.381-.222-3.95 1.021 1.021-3.95-.222-.381A9.967 9.967 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+              Escribir por WhatsApp
+            </a>
+          </div>
+
+          <div class="contact-form-card">
+            <h3>Envíenos un mensaje</h3>
+            <form class="contact-form" id="contact-form">
+              <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input id="nombre" name="nombre" type="text" placeholder="Su nombre completo" required />
+              </div>
+              <div class="form-group">
+                <label for="email">Correo electrónico</label>
+                <input id="email" name="email" type="email" placeholder="correo@ejemplo.com" required />
+              </div>
+              <div class="form-group">
+                <label for="mensaje">Mensaje</label>
+                <textarea id="mensaje" name="mensaje" rows="4" placeholder="Descripción de su consulta..." required></textarea>
+              </div>
+              <button type="button" class="btn btn-primary" onclick="enviarMensajeWA()">
+                Enviar por WhatsApp
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8 ── Vendedores bar ── -->
+      <section class="section-alt" style="padding:2rem 0;">
+        <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;">
+          <div>
+            <h3 style="margin:0 0 .3rem;font-size:1.05rem;">¿Eres vendedor de Carbec?</h3>
+            <p style="margin:0;color:var(--color-muted);font-size:.9rem;">Accede al portal de vendedores — reuniones, anuncios y recursos internos.</p>
+          </div>
+          <a href="vendedores.html" class="btn btn-primary" style="flex-shrink:0;">Portal de vendedores →</a>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="index.html" class="brand" style="color:#fff;">
+              <img src="img/logo.jpg" alt="Carbec" class="brand-logo" style="opacity:.9;" />
+              <div class="brand-text">
+                <span class="brand-name" style="color:#fff;">CARBEC</span>
+                <span class="brand-subtitle" style="color:rgba(255,255,255,.6);">Import S.R.L.</span>
+              </div>
+            </a>
+            <p>Importación y distribución de productos de calidad para el mercado dominicano.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Navegación</h4>
+            <ul>
+              <li><a href="index.html">Inicio</a></li>
+              <li><a href="products.html">Productos</a></li>
+              <li><a href="#nosotros">Nosotros</a></li>
+              <li><a href="#contacto">Contacto</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Contacto</h4>
+            <ul>
+              <li><a href="tel:+18095777989">809-577-7989</a></li>
+              <li><a href="https://wa.me/18095777989" target="_blank">WhatsApp</a></li>
+              <li><span style="opacity:.7;">Moca, Espaillat, RD</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© <span id="year"></span> Carbec Import S.R.L. Todos los derechos reservados.</span>
+          <span>Moca, Espaillat, República Dominicana</span>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      document.addEventListener('DOMContentLoaded', () => {
+
+        // ── Productos destacados: 2 de cada una de las primeras 4 categorías ──
+        const grid = document.getElementById('featured-grid');
+        if (grid && Array.isArray(window.products)) {
+          const cats = [...new Set(window.products.map(p => p.category))].slice(0, 4);
+          const picks = cats.flatMap(cat =>
+            window.products.filter(p => p.category === cat).slice(0, 2)
+          );
+          grid.innerHTML = picks.map(p => `
+            <a href="product.html?id=${encodeURIComponent(p.id)}" class="featured-card">
+              <div class="featured-card-img">
+                <img src="${p.mainImage}" alt="${p.name}"
+                     loading="lazy"
+                     onerror="this.parentElement.innerHTML='<div class=\\'img-placeholder\\'>Sin imagen</div>'" />
+              </div>
+              <div class="featured-card-name">${p.name}</div>
+            </a>`).join('');
+        }
+
+        // ── Modal de anuncio (1 vez por sesión) ──
+        if (!sessionStorage.getItem('promo_seen') && Array.isArray(window.products)) {
+          const promoProducts = window.products.slice(0, 3);
+          document.getElementById('promo-list').innerHTML = promoProducts.map(p => `
+            <div class="promo-product-item">
+              <img src="${p.mainImage}" alt="${p.name}"
+                   onerror="this.style.display='none'" />
+              <div>
+                <div class="name">${p.name}</div>
+                <div class="desc">${p.shortDescription || ''}</div>
+              </div>
+            </div>`).join('');
+          setTimeout(() => document.getElementById('promo-overlay').classList.add('show'), 2000);
+        }
+      });
+
+      function closePromo() {
+        document.getElementById('promo-overlay').classList.remove('show');
+        sessionStorage.setItem('promo_seen', '1');
+      }
+      document.getElementById('promo-overlay').addEventListener('click', e => {
+        if (e.target === document.getElementById('promo-overlay')) closePromo();
+      });
+
+      // ── Newsletter ──
+      document.getElementById('newsletter-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const email = document.getElementById('nl-email').value.trim();
+        const ok = document.getElementById('newsletter-ok');
+        if (!email) return;
+        try {
+          await fetch('http://localhost:3001/api/newsletter/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          });
+        } catch {}
+        document.getElementById('nl-email').value = '';
+        ok.style.display = 'block';
+        setTimeout(() => ok.style.display = 'none', 5000);
+      });
+
+      function enviarMensajeWA() {
+        const nombre  = document.getElementById('nombre').value.trim();
+        const email   = document.getElementById('email').value.trim();
+        const mensaje = document.getElementById('mensaje').value.trim();
+        if (!nombre || !mensaje) { alert('Por favor completa tu nombre y mensaje.'); return; }
+        const texto = `Hola! Me llamo ${nombre}${email ? ' (' + email + ')' : ''}.\n\n${mensaje}`;
+        window.open('https://wa.me/18095777989?text=' + encodeURIComponent(texto), '_blank');
+      }
+    </script>
+  </body>
+</html>

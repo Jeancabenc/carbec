@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Panel Admin — Carbec Import S.R.L</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --bg:      #0f172a;
+        --surface: #1e293b;
+        --border:  #334155;
+        --text:    #f1f5f9;
+        --muted:   #94a3b8;
+        --primary: #38bdf8;
+        --primary-dark: #0ea5e9;
+        --accent:  #f59e0b;
+        --danger:  #ef4444;
+        --success: #22c55e;
+        --radius:  10px;
+      }
+      body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; font-size: 14px; }
+
+      /* ── Sidebar ── */
+      .sidebar {
+        width: 220px; flex-shrink: 0;
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex; flex-direction: column;
+        overflow-y: auto;
+      }
+      .sidebar-brand {
+        padding: 1.25rem 1rem 1rem;
+        border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; gap: .6rem;
+      }
+      .sidebar-brand img  { width: 36px; height: 36px; border-radius: 6px; object-fit: contain; }
+      .sidebar-brand span { font-size: .82rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--primary); }
+
+      .sidebar-section { padding: 1rem .75rem .25rem; font-size: .65rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+
+      .nav-item {
+        display: flex; align-items: center; gap: .65rem;
+        width: 100%; background: none; border: none;
+        padding: .6rem .85rem; border-radius: var(--radius);
+        font-family: inherit; font-size: .88rem; font-weight: 500;
+        color: var(--muted); cursor: pointer; text-align: left;
+        margin: .1rem .35rem; width: calc(100% - .7rem);
+        transition: background .15s, color .15s;
+      }
+      .nav-item:hover  { background: rgba(56,189,248,.1); color: var(--text); }
+      .nav-item.active { background: rgba(56,189,248,.15); color: var(--primary); }
+      .nav-item .icon  { font-size: 1rem; width: 20px; text-align: center; }
+
+      .sidebar-bottom { margin-top: auto; padding: 1rem .75rem; border-top: 1px solid var(--border); }
+      .user-chip { display: flex; align-items: center; gap: .5rem; padding: .5rem; border-radius: var(--radius); }
+      .user-chip .avatar { width: 30px; height: 30px; background: var(--primary-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+      .user-chip .info   { flex: 1; min-width: 0; }
+      .user-chip .name   { font-size: .82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .user-chip .role   { font-size: .7rem; color: var(--muted); }
+      .logout-btn { display: block; width: 100%; background: none; border: 1px solid var(--border); border-radius: var(--radius); padding: .4rem; font-family: inherit; font-size: .8rem; color: var(--muted); cursor: pointer; margin-top: .5rem; transition: color .15s, border-color .15s; }
+      .logout-btn:hover { color: var(--danger); border-color: var(--danger); }
+
+      /* ── Main ── */
+      .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+      .topbar {
+        padding: .85rem 1.5rem; background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: space-between;
+        flex-shrink: 0;
+      }
+      .topbar h1 { font-size: 1.1rem; font-weight: 700; }
+      .topbar .badge-live { background: rgba(34,197,94,.15); color: var(--success); border: 1px solid rgba(34,197,94,.3); border-radius: 999px; padding: .15rem .55rem; font-size: .72rem; font-weight: 600; }
+
+      .content { flex: 1; overflow-y: auto; padding: 1.5rem; }
+
+      /* ── Sections ── */
+      .section { display: none; }
+      .section.active { display: block; }
+
+      /* ── Stats grid ── */
+      .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+      .stat-card {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 1.1rem 1.25rem;
+      }
+      .stat-card .val  { font-size: 1.9rem; font-weight: 800; line-height: 1; }
+      .stat-card .lbl  { font-size: .75rem; color: var(--muted); margin-top: .35rem; }
+      .stat-card.blue  .val { color: var(--primary); }
+      .stat-card.amber .val { color: var(--accent); }
+      .stat-card.green .val { color: var(--success); }
+      .stat-card.red   .val { color: var(--danger); }
+
+      /* ── Tables ── */
+      .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: auto; }
+      table { width: 100%; border-collapse: collapse; }
+      th { background: rgba(255,255,255,.03); border-bottom: 1px solid var(--border); padding: .65rem 1rem; text-align: left; font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); white-space: nowrap; }
+      td { padding: .65rem 1rem; border-bottom: 1px solid rgba(255,255,255,.04); vertical-align: middle; font-size: .85rem; }
+      tr:last-child td { border-bottom: none; }
+      tr:hover td { background: rgba(255,255,255,.02); }
+
+      /* ── Badges / chips ── */
+      .chip {
+        display: inline-flex; align-items: center; gap: .3rem;
+        border-radius: 999px; padding: .18rem .6rem;
+        font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap;
+      }
+      .chip-pendiente  { background: rgba(245,158,11,.15);  color: #fbbf24; }
+      .chip-confirmado { background: rgba(56,189,248,.15);  color: var(--primary); }
+      .chip-en_proceso { background: rgba(167,139,250,.15); color: #a78bfa; }
+      .chip-facturado  { background: rgba(34,197,94,.15);   color: var(--success); }
+      .chip-enviado    { background: rgba(34,197,94,.2);    color: #4ade80; }
+      .chip-entregado  { background: rgba(34,197,94,.25);   color: #86efac; }
+      .chip-cancelado  { background: rgba(239,68,68,.15);   color: var(--danger); }
+
+      .chip-en_progreso   { background: rgba(56,189,248,.15);  color: var(--primary); }
+      .chip-espera_cliente{ background: rgba(245,158,11,.15);  color: #fbbf24; }
+      .chip-en_desarrollo { background: rgba(167,139,250,.15); color: #a78bfa; }
+      .chip-cerrado       { background: rgba(34,197,94,.15);   color: var(--success); }
+      .chip-archivado     { background: rgba(148,163,184,.15); color: var(--muted); }
+
+      /* ── Select inline ── */
+      select.inline-select {
+        background: var(--bg); border: 1px solid var(--border);
+        color: var(--text); border-radius: 6px; padding: .3rem .5rem;
+        font-size: .8rem; font-family: inherit; cursor: pointer;
+        outline: none;
+      }
+      select.inline-select:focus { border-color: var(--primary); }
+
+      /* ── Buttons ── */
+      .btn { display: inline-flex; align-items: center; gap: .35rem; padding: .45rem .9rem; border-radius: 6px; border: none; font-family: inherit; font-size: .83rem; font-weight: 600; cursor: pointer; transition: opacity .15s; }
+      .btn:hover { opacity: .85; }
+      .btn-primary { background: var(--primary-dark); color: #fff; }
+      .btn-danger  { background: var(--danger); color: #fff; }
+      .btn-ghost   { background: rgba(255,255,255,.06); color: var(--text); }
+      .btn-sm      { padding: .28rem .65rem; font-size: .76rem; }
+
+      /* ── Filters bar ── */
+      .filters { display: flex; align-items: center; gap: .65rem; margin-bottom: 1rem; flex-wrap: wrap; }
+      .filters input[type="search"] {
+        background: var(--surface); border: 1px solid var(--border);
+        color: var(--text); border-radius: 6px; padding: .4rem .75rem;
+        font-size: .85rem; font-family: inherit; outline: none; width: 220px;
+      }
+      .filters input:focus { border-color: var(--primary); }
+
+      /* ── Kanban ── */
+      .kanban-board { display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 1rem; align-items: flex-start; }
+      .kanban-col {
+        flex-shrink: 0; width: 230px;
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--radius); display: flex; flex-direction: column; max-height: calc(100vh - 200px);
+      }
+      .kanban-col-header {
+        padding: .75rem 1rem; font-size: .78rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .06em; border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+      }
+      .kanban-col-header .count { background: rgba(255,255,255,.1); border-radius: 999px; padding: .1rem .45rem; font-size: .7rem; }
+      .kanban-col.col-en_progreso   .kanban-col-header { color: var(--primary); }
+      .kanban-col.col-espera_cliente .kanban-col-header { color: #fbbf24; }
+      .kanban-col.col-en_desarrollo  .kanban-col-header { color: #a78bfa; }
+      .kanban-col.col-cerrado         .kanban-col-header { color: var(--success); }
+      .kanban-col.col-archivado       .kanban-col-header { color: var(--muted); }
+
+      .kanban-cards { flex: 1; overflow-y: auto; padding: .5rem; display: flex; flex-direction: column; gap: .5rem; min-height: 60px; }
+      .kanban-card {
+        background: var(--bg); border: 1px solid var(--border);
+        border-radius: 8px; padding: .75rem;
+        cursor: grab; transition: box-shadow .15s, transform .15s;
+        user-select: none;
+      }
+      .kanban-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.3); transform: translateY(-1px); }
+      .kanban-card.dragging { opacity: .5; cursor: grabbing; }
+      .kanban-col.drag-over .kanban-cards { background: rgba(56,189,248,.05); border-radius: 6px; }
+
+      .kc-title { font-size: .84rem; font-weight: 600; margin-bottom: .35rem; line-height: 1.3; }
+      .kc-customer { font-size: .75rem; color: var(--muted); margin-bottom: .4rem; }
+      .kc-date { font-size: .7rem; color: var(--muted); }
+      .kc-priority { display: inline-block; border-radius: 3px; padding: .1rem .35rem; font-size: .65rem; font-weight: 700; text-transform: uppercase; }
+      .kc-priority.alta    { background: rgba(239,68,68,.2); color: var(--danger); }
+      .kc-priority.urgente { background: rgba(239,68,68,.35); color: #fca5a5; }
+      .kc-priority.normal  { background: rgba(148,163,184,.15); color: var(--muted); }
+      .kc-priority.baja    { background: rgba(34,197,94,.1); color: var(--success); }
+
+      .kanban-empty { font-size: .78rem; color: var(--muted); text-align: center; padding: 1rem .5rem; }
+
+      /* ── Modal ── */
+      .modal-overlay {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,.6); z-index: 500;
+        align-items: center; justify-content: center; padding: 1rem;
+      }
+      .modal-overlay.open { display: flex; }
+      .modal {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--radius); width: 100%; max-width: 520px;
+        max-height: 90vh; overflow-y: auto;
+        padding: 1.5rem; position: relative;
+      }
+      .modal h3 { margin-bottom: 1rem; font-size: 1.05rem; }
+      .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; }
+      .modal-close:hover { color: var(--text); }
+
+      .form-group { display: flex; flex-direction: column; gap: .3rem; margin-bottom: .75rem; }
+      .form-group label { font-size: .78rem; font-weight: 500; color: var(--muted); }
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        background: var(--bg); border: 1px solid var(--border);
+        color: var(--text); border-radius: 6px; padding: .5rem .75rem;
+        font-family: inherit; font-size: .88rem; outline: none;
+        transition: border-color .15s;
+      }
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus { border-color: var(--primary); }
+      .form-group textarea { resize: vertical; min-height: 80px; }
+      .form-actions { display: flex; gap: .5rem; justify-content: flex-end; margin-top: 1rem; }
+
+      .form-error { color: var(--danger); font-size: .8rem; padding: .4rem; }
+
+      /* ── Activity log ── */
+      .activity-item { display: flex; align-items: flex-start; gap: .75rem; padding: .65rem 0; border-bottom: 1px solid rgba(255,255,255,.04); }
+      .activity-item:last-child { border-bottom: none; }
+      .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); flex-shrink: 0; margin-top: .35rem; }
+      .activity-body .main { font-size: .85rem; }
+      .activity-body .sub  { font-size: .75rem; color: var(--muted); margin-top: .15rem; }
+
+      .loading-row { text-align: center; color: var(--muted); padding: 2rem; font-size: .9rem; }
+      .empty-row   { text-align: center; color: var(--muted); padding: 1.5rem; font-size: .85rem; }
+
+      @media (max-width: 640px) {
+        body { flex-direction: column; }
+        .sidebar { width: 100%; height: auto; flex-direction: row; flex-wrap: wrap; overflow-x: auto; }
+        .main { height: calc(100vh - 100px); }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="../img/logo.jpg" alt="Carbec" />
+        <span>Carbec Admin</span>
+      </div>
+
+      <div class="sidebar-section">Principal</div>
+      <button class="nav-item active" data-section="dashboard"><span class="icon">📊</span> Dashboard</button>
+      <button class="nav-item" data-section="orders"><span class="icon">📦</span> Pedidos</button>
+      <button class="nav-item" data-section="customers"><span class="icon">👥</span> Clientes</button>
+
+      <div class="sidebar-section">Soporte</div>
+      <button class="nav-item" data-section="tickets"><span class="icon">🎫</span> Tickets</button>
+
+      <div class="sidebar-section">Sistema</div>
+      <button class="nav-item" data-section="activity"><span class="icon">📋</span> Actividad</button>
+      <button class="nav-item" data-section="employees"><span class="icon">🔑</span> Empleados</button>
+
+      <div class="sidebar-bottom">
+        <div class="user-chip">
+          <div class="avatar" id="user-avatar">A</div>
+          <div class="info">
+            <div class="name" id="user-name">Cargando...</div>
+            <div class="role" id="user-role">admin</div>
+          </div>
+        </div>
+        <button class="logout-btn" onclick="window.api.logout()">← Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <!-- ── Main ── -->
+    <div class="main">
+      <div class="topbar">
+        <h1 id="topbar-title">Dashboard</h1>
+        <span class="badge-live">● En vivo</span>
+      </div>
+
+      <div class="content">
+
+        <!-- Dashboard -->
+        <section id="s-dashboard" class="section active">
+          <div class="stats-grid" id="stats-grid">
+            <div class="stat-card blue"><div class="val" id="st-orders">—</div><div class="lbl">Pedidos totales</div></div>
+            <div class="stat-card amber"><div class="val" id="st-pending">—</div><div class="lbl">Pendientes</div></div>
+            <div class="stat-card green"><div class="val" id="st-shipped">—</div><div class="lbl">Enviados / Entregados</div></div>
+            <div class="stat-card blue"><div class="val" id="st-customers">—</div><div class="lbl">Clientes registrados</div></div>
+            <div class="stat-card red"><div class="val" id="st-tickets">—</div><div class="lbl">Tickets abiertos</div></div>
+          </div>
+          <h2 style="margin-bottom:1rem;font-size:1rem;font-weight:700;">Últimos pedidos</h2>
+          <div class="table-wrap" id="recent-orders-table"><div class="loading-row">Cargando...</div></div>
+        </section>
+
+        <!-- Pedidos -->
+        <section id="s-orders" class="section">
+          <div class="filters">
+            <input type="search" id="orders-search" placeholder="Buscar pedido o cliente..." />
+            <select class="inline-select" id="orders-status-filter">
+              <option value="">Todos los estados</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="confirmado">Confirmado</option>
+              <option value="en_proceso">En proceso</option>
+              <option value="facturado">Facturado</option>
+              <option value="enviado">Enviado</option>
+              <option value="entregado">Entregado</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+          <div class="table-wrap" id="orders-table"><div class="loading-row">Cargando...</div></div>
+        </section>
+
+        <!-- Clientes -->
+        <section id="s-customers" class="section">
+          <div class="filters">
+            <input type="search" id="customers-search" placeholder="Buscar cliente..." />
+          </div>
+          <div class="table-wrap" id="customers-table"><div class="loading-row">Cargando...</div></div>
+        </section>
+
+        <!-- Tickets Kanban -->
+        <section id="s-tickets" class="section">
+          <div class="filters" style="margin-bottom:1.25rem;">
+            <button class="btn btn-primary btn-sm" onclick="openNewTicketModal()">+ Nuevo ticket</button>
+          </div>
+          <div class="kanban-board" id="kanban-board"></div>
+        </section>
+
+        <!-- Actividad -->
+        <section id="s-activity" class="section">
+          <div id="activity-log"><div class="loading-row">Cargando...</div></div>
+        </section>
+
+        <!-- Empleados -->
+        <section id="s-employees" class="section">
+          <div class="filters">
+            <button class="btn btn-primary btn-sm" onclick="openNewEmployeeModal()">+ Nuevo empleado</button>
+          </div>
+          <div class="table-wrap" id="employees-table"><div class="loading-row">Cargando...</div></div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- ── Modals ── -->
+
+    <!-- Detalle de pedido -->
+    <div class="modal-overlay" id="modal-order">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal('modal-order')">✕</button>
+        <h3>Detalle del pedido</h3>
+        <div id="order-detail-content"></div>
+      </div>
+    </div>
+
+    <!-- Nuevo empleado -->
+    <div class="modal-overlay" id="modal-employee">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal('modal-employee')">✕</button>
+        <h3>Crear cuenta de empleado</h3>
+        <div id="emp-error" class="form-error" style="display:none;"></div>
+        <div class="form-group">
+          <label>Nombre completo</label>
+          <input id="emp-name" type="text" placeholder="Nombre del empleado" />
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input id="emp-email" type="email" placeholder="correo@carbec.com" />
+        </div>
+        <div class="form-group">
+          <label>Contraseña temporal</label>
+          <input id="emp-password" type="password" placeholder="Mínimo 6 caracteres" />
+        </div>
+        <div class="form-group">
+          <label>Rol</label>
+          <select id="emp-role">
+            <option value="operator">Operador</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-ghost" onclick="closeModal('modal-employee')">Cancelar</button>
+          <button class="btn btn-primary" id="emp-submit-btn" onclick="submitNewEmployee()">Crear empleado</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detalle ticket -->
+    <div class="modal-overlay" id="modal-ticket">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal('modal-ticket')">✕</button>
+        <div id="ticket-detail-content"></div>
+      </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script>
+      // Solo admins
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!window.api.isLoggedIn() || !window.api.isAdmin()) {
+          window.location.href = '../login.html';
+        }
+        const user = window.api.getUser();
+        document.getElementById('user-name').textContent  = user?.full_name || user?.email || 'Admin';
+        document.getElementById('user-role').textContent  = user?.admin_role || 'admin';
+        document.getElementById('user-avatar').textContent = (user?.full_name || 'A')[0].toUpperCase();
+        initAdmin();
+      });
+
+      // ── Navegación ──
+      const sectionTitles = {
+        dashboard: 'Dashboard', orders: 'Pedidos', customers: 'Clientes',
+        tickets: 'Tickets', activity: 'Actividad', employees: 'Empleados'
+      };
+
+      document.querySelectorAll('.nav-item[data-section]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById(`s-${btn.dataset.section}`).classList.add('active');
+          document.getElementById('topbar-title').textContent = sectionTitles[btn.dataset.section] || '';
+        });
+      });
+
+      // ── Modal helpers ──
+      function openModal(id)  { document.getElementById(id).classList.add('open'); }
+      function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+      document.querySelectorAll('.modal-overlay').forEach(el => {
+        el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+      });
+
+      // ── Helpers ──
+      function fmt(iso) {
+        return new Date(iso).toLocaleDateString('es-DO', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      }
+      function fmtDate(iso) {
+        return new Date(iso).toLocaleDateString('es-DO', { day:'2-digit', month:'short', year:'numeric' });
+      }
+
+      const STATUS_LABELS = {
+        pendiente:'Pendiente', confirmado:'Confirmado', en_proceso:'En proceso',
+        facturado:'Facturado', enviado:'Enviado', entregado:'Entregado', cancelado:'Cancelado'
+      };
+      const TICKET_STATUS = ['en_progreso','espera_cliente','en_desarrollo','cerrado','archivado'];
+      const TICKET_LABELS = {
+        en_progreso:'En progreso', espera_cliente:'Espera cliente',
+        en_desarrollo:'Enviando a desarrollo', cerrado:'Cerrado', archivado:'Archivado'
+      };
+
+      function chip(status) {
+        return `<span class="chip chip-${status}">${STATUS_LABELS[status] || status}</span>`;
+      }
+      function tChip(status) {
+        return `<span class="chip chip-${status}">${TICKET_LABELS[status] || status}</span>`;
+      }
+
+      // ── Admin init ──
+      let allOrders = [], allCustomers = [], allTickets = [];
+
+      async function initAdmin() {
+        await Promise.all([loadStats(), loadRecentOrders(), loadOrders(), loadCustomers(), loadTickets(), loadActivity(), loadEmployees()]);
+      }
+
+      // ── Stats ──
+      async function loadStats() {
+        try {
+          const s = await window.api.adminStats();
+          document.getElementById('st-orders').textContent    = s.totalOrders    ?? '—';
+          document.getElementById('st-pending').textContent   = s.pendingOrders  ?? '—';
+          document.getElementById('st-shipped').textContent   = s.shippedOrders  ?? '—';
+          document.getElementById('st-customers').textContent = s.totalCustomers ?? '—';
+          document.getElementById('st-tickets').textContent   = s.openTickets    ?? '—';
+        } catch {}
+      }
+
+      // ── Recent orders (dashboard) ──
+      async function loadRecentOrders() {
+        try {
+          const orders = await window.api.adminOrders({ limit: 10 });
+          renderOrdersTable(orders, 'recent-orders-table', true);
+        } catch {
+          document.getElementById('recent-orders-table').innerHTML = '<div class="empty-row">Error al cargar pedidos.</div>';
+        }
+      }
+
+      // ── Orders ──
+      async function loadOrders() {
+        try {
+          allOrders = await window.api.adminOrders({ limit: 200 });
+          renderFilteredOrders();
+        } catch {
+          document.getElementById('orders-table').innerHTML = '<div class="empty-row">Error al cargar.</div>';
+        }
+      }
+
+      function renderFilteredOrders() {
+        const q   = document.getElementById('orders-search')?.value.toLowerCase() || '';
+        const st  = document.getElementById('orders-status-filter')?.value || '';
+        let list  = allOrders;
+        if (st) list = list.filter(o => o.status === st);
+        if (q)  list = list.filter(o =>
+          o.id.includes(q) || o.customer_name?.toLowerCase().includes(q) ||
+          o.customer_phone?.includes(q)
+        );
+        renderOrdersTable(list, 'orders-table', false);
+      }
+
+      document.getElementById('orders-search')?.addEventListener('input', renderFilteredOrders);
+      document.getElementById('orders-status-filter')?.addEventListener('change', renderFilteredOrders);
+
+      function renderOrdersTable(orders, containerId, compact) {
+        const el = document.getElementById(containerId);
+        if (!orders.length) { el.innerHTML = '<div class="empty-row">No hay pedidos.</div>'; return; }
+        el.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th><th>Cliente</th><th>Artículos</th><th>Estado</th><th>Fecha</th>
+                ${compact ? '' : '<th>Acciones</th>'}
+              </tr>
+            </thead>
+            <tbody>
+              ${orders.map(o => `
+                <tr>
+                  <td style="font-family:monospace;font-size:.75rem;color:var(--muted);">#${o.id.slice(0,8).toUpperCase()}</td>
+                  <td>
+                    <div style="font-weight:600;">${o.customer_name || '—'}</div>
+                    <div style="font-size:.74rem;color:var(--muted);">${o.customer_phone || ''}</div>
+                  </td>
+                  <td style="color:var(--muted);">${(o.order_items||[]).length} artículo(s)</td>
+                  <td>${chip(o.status)}</td>
+                  <td style="color:var(--muted);font-size:.78rem;">${fmtDate(o.created_at)}</td>
+                  ${compact ? '' : `
+                  <td style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;">
+                    <button class="btn btn-ghost btn-sm" onclick="showOrderDetail('${o.id}')">Ver</button>
+                    <select class="inline-select" onchange="updateOrderStatus('${o.id}', this.value)" style="font-size:.76rem;">
+                      ${['pendiente','confirmado','en_proceso','facturado','enviado','entregado','cancelado'].map(s =>
+                        `<option value="${s}" ${o.status===s?'selected':''}>${STATUS_LABELS[s]}</option>`
+                      ).join('')}
+                    </select>
+                  </td>`}
+                </tr>`).join('')}
+            </tbody>
+          </table>`;
+      }
+
+      async function updateOrderStatus(id, status) {
+        try {
+          await window.api.adminSetOrderStatus(id, status);
+          await loadOrders();
+          await loadStats();
+        } catch (err) { alert(err.message); }
+      }
+
+      function showOrderDetail(id) {
+        const order = allOrders.find(o => o.id === id);
+        if (!order) return;
+        const items = (order.order_items || []).map(i => `
+          <div style="display:flex;align-items:center;gap:.65rem;padding:.5rem 0;border-bottom:1px solid var(--border);">
+            <img src="${i.product_image}" alt="" style="width:40px;height:40px;object-fit:contain;border-radius:5px;background:var(--bg);" onerror="this.style.display='none'" />
+            <div>
+              <div style="font-weight:600;font-size:.85rem;">${i.product_name}</div>
+              <div style="font-size:.75rem;color:var(--muted);">${i.product_description || ''} ×${i.quantity}</div>
+            </div>
+          </div>`).join('');
+
+        document.getElementById('order-detail-content').innerHTML = `
+          <div style="display:grid;gap:.5rem;margin-bottom:1rem;">
+            <div><span style="color:var(--muted);font-size:.78rem;">ID</span><br/><code style="font-size:.8rem;">${order.id}</code></div>
+            <div><span style="color:var(--muted);font-size:.78rem;">Cliente</span><br/>${order.customer_name}</div>
+            <div><span style="color:var(--muted);font-size:.78rem;">Teléfono</span><br/>${order.customer_phone || '—'}</div>
+            <div><span style="color:var(--muted);font-size:.78rem;">Dirección</span><br/>${order.customer_address || '—'}, ${order.customer_city || ''}</div>
+            <div><span style="color:var(--muted);font-size:.78rem;">Estado</span><br/>${chip(order.status)}</div>
+            <div><span style="color:var(--muted);font-size:.78rem;">Fecha</span><br/>${fmt(order.created_at)}</div>
+            ${order.notes ? `<div><span style="color:var(--muted);font-size:.78rem;">Notas</span><br/>${order.notes}</div>` : ''}
+            ${order.alliance_order_id ? `<div><span style="color:var(--muted);font-size:.78rem;">ID Alliance</span><br/><code>${order.alliance_order_id}</code></div>` : ''}
+          </div>
+          <div style="font-weight:700;margin-bottom:.5rem;">Artículos</div>
+          ${items || '<div style="color:var(--muted);">Sin artículos.</div>'}
+        `;
+        openModal('modal-order');
+      }
+
+      // ── Customers ──
+      async function loadCustomers() {
+        try {
+          allCustomers = await window.api.adminCustomers();
+          renderCustomers(allCustomers);
+        } catch {
+          document.getElementById('customers-table').innerHTML = '<div class="empty-row">Error al cargar.</div>';
+        }
+      }
+
+      function renderCustomers(list) {
+        const el = document.getElementById('customers-table');
+        if (!list.length) { el.innerHTML = '<div class="empty-row">No hay clientes.</div>'; return; }
+        el.innerHTML = `
+          <table>
+            <thead><tr><th>Nombre</th><th>Teléfono</th><th>Ciudad</th><th>Pedidos</th><th>Registrado</th></tr></thead>
+            <tbody>
+              ${list.map(c => `
+                <tr>
+                  <td style="font-weight:600;">${c.full_name}</td>
+                  <td style="color:var(--muted);">${c.phone || '—'}</td>
+                  <td style="color:var(--muted);">${c.city || '—'}</td>
+                  <td>${(c.orders||[]).length}</td>
+                  <td style="color:var(--muted);font-size:.78rem;">${fmtDate(c.created_at)}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>`;
+      }
+
+      document.getElementById('customers-search')?.addEventListener('input', function() {
+        const q = this.value.toLowerCase();
+        renderCustomers(q ? allCustomers.filter(c =>
+          c.full_name?.toLowerCase().includes(q) || c.phone?.includes(q) || c.city?.toLowerCase().includes(q)
+        ) : allCustomers);
+      });
+
+      // ── Tickets Kanban ──
+      async function loadTickets() {
+        try {
+          allTickets = await window.api.adminTickets();
+          renderKanban();
+        } catch {
+          document.getElementById('kanban-board').innerHTML = '<div style="color:var(--muted);padding:1rem;">Error al cargar tickets.</div>';
+        }
+      }
+
+      function renderKanban() {
+        const board = document.getElementById('kanban-board');
+        board.innerHTML = '';
+
+        TICKET_STATUS.forEach(status => {
+          const tickets = allTickets.filter(t => t.status === status);
+          const col = document.createElement('div');
+          col.className = `kanban-col col-${status}`;
+          col.dataset.status = status;
+          col.innerHTML = `
+            <div class="kanban-col-header">
+              ${TICKET_LABELS[status]}
+              <span class="count">${tickets.length}</span>
+            </div>
+            <div class="kanban-cards" id="kc-${status}">
+              ${tickets.length ? '' : '<div class="kanban-empty">Sin tickets en esta columna</div>'}
+            </div>`;
+
+          tickets.forEach(ticket => {
+            const card = document.createElement('div');
+            card.className = 'kanban-card';
+            card.draggable = true;
+            card.dataset.id = ticket.id;
+            card.innerHTML = `
+              <div class="kc-title">${ticket.subject}</div>
+              <div class="kc-customer">👤 ${ticket.customer_name}</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:.3rem;">
+                <div class="kc-date">${fmtDate(ticket.created_at)}</div>
+                <span class="kc-priority ${ticket.priority}">${ticket.priority}</span>
+              </div>`;
+
+            card.addEventListener('click', () => showTicketDetail(ticket.id));
+            card.addEventListener('dragstart', e => { e.dataTransfer.setData('ticketId', ticket.id); card.classList.add('dragging'); });
+            card.addEventListener('dragend', () => card.classList.remove('dragging'));
+            col.querySelector('.kanban-cards').appendChild(card);
+          });
+
+          // Drop zone
+          const cardsEl = col.querySelector('.kanban-cards');
+          cardsEl.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('drag-over'); });
+          cardsEl.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+          cardsEl.addEventListener('drop', async e => {
+            e.preventDefault();
+            col.classList.remove('drag-over');
+            const ticketId = e.dataTransfer.getData('ticketId');
+            if (!ticketId) return;
+            try {
+              await window.api.adminUpdateTicket(ticketId, { status });
+              await loadTickets();
+            } catch (err) { alert(err.message); }
+          });
+
+          board.appendChild(col);
+        });
+      }
+
+      function showTicketDetail(id) {
+        const ticket = allTickets.find(t => t.id === id);
+        if (!ticket) return;
+        const comments = (ticket.ticket_comments || []).map(c => `
+          <div style="background:${c.is_admin ? 'rgba(56,189,248,.08)' : 'var(--bg)'};border:1px solid var(--border);border-radius:6px;padding:.6rem .85rem;margin-bottom:.4rem;">
+            <div style="font-size:.74rem;color:var(--muted);margin-bottom:.2rem;">${c.is_admin ? '🔑 Admin' : '👤 ' + c.user_name} · ${fmtDate(c.created_at)}</div>
+            <div style="font-size:.85rem;">${c.comment}</div>
+          </div>`).join('');
+
+        document.getElementById('ticket-detail-content').innerHTML = `
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:1rem;">
+            <h3 style="margin:0;">${ticket.subject}</h3>
+            ${tChip(ticket.status)}
+          </div>
+          <div style="font-size:.82rem;color:var(--muted);margin-bottom:.75rem;">
+            Cliente: <strong style="color:var(--text);">${ticket.customer_name}</strong> &nbsp;·&nbsp;
+            Fecha: ${fmtDate(ticket.created_at)}
+          </div>
+          ${ticket.description ? `<p style="font-size:.88rem;margin-bottom:1rem;">${ticket.description}</p>` : ''}
+          <div style="margin-bottom:.75rem;">
+            <label style="font-size:.78rem;color:var(--muted);">Mover a columna:</label>
+            <select class="inline-select" id="tk-status-sel" style="margin-left:.5rem;">
+              ${TICKET_STATUS.map(s => `<option value="${s}" ${ticket.status===s?'selected':''}>${TICKET_LABELS[s]}</option>`).join('')}
+            </select>
+            <button class="btn btn-primary btn-sm" style="margin-left:.4rem;" onclick="moveTicket('${ticket.id}')">Mover</button>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:.75rem;margin-top:.75rem;">
+            <div style="font-weight:600;font-size:.82rem;margin-bottom:.5rem;">Comentarios</div>
+            <div id="tk-comments">${comments || '<div style="color:var(--muted);font-size:.82rem;">Sin comentarios.</div>'}</div>
+            <div style="margin-top:.75rem;">
+              <textarea id="tk-comment-input" placeholder="Agregar comentario..." style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.5rem .75rem;font-family:inherit;font-size:.85rem;resize:vertical;min-height:70px;outline:none;"></textarea>
+              <button class="btn btn-primary btn-sm" style="margin-top:.4rem;" onclick="addTicketComment('${ticket.id}')">Comentar</button>
+            </div>
+          </div>`;
+        openModal('modal-ticket');
+      }
+
+      async function moveTicket(id) {
+        const status = document.getElementById('tk-status-sel')?.value;
+        try {
+          await window.api.adminUpdateTicket(id, { status });
+          closeModal('modal-ticket');
+          await loadTickets();
+        } catch (err) { alert(err.message); }
+      }
+
+      async function addTicketComment(ticketId) {
+        const input = document.getElementById('tk-comment-input');
+        const comment = input?.value.trim();
+        if (!comment) return;
+        try {
+          await window.api.adminCommentTicket(ticketId, comment);
+          input.value = '';
+          await loadTickets();
+          showTicketDetail(ticketId);
+        } catch (err) { alert(err.message); }
+      }
+
+      function openNewTicketModal() { /* futuro: crear ticket desde admin */ alert('Función próximamente disponible.'); }
+
+      // ── Activity ──
+      async function loadActivity() {
+        try {
+          const log = await window.api.adminActivity();
+          const el = document.getElementById('activity-log');
+          el.innerHTML = log.length
+            ? `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;">
+                ${log.map(a => `
+                  <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <div class="activity-body">
+                      <div class="main"><strong>${a.user_name}</strong> — ${a.action}</div>
+                      <div class="sub">${fmt(a.created_at)} ${a.entity_type ? `· ${a.entity_type}` : ''}</div>
+                    </div>
+                  </div>`).join('')}
+              </div>`
+            : '<div class="empty-row">Sin actividad registrada.</div>';
+        } catch {
+          document.getElementById('activity-log').innerHTML = '<div class="empty-row">Error al cargar.</div>';
+        }
+      }
+
+      // ── Employees ──
+      async function loadEmployees() {
+        try {
+          const emps = await window.api.adminEmployees();
+          const el = document.getElementById('employees-table');
+          if (!emps.length) { el.innerHTML = '<div class="empty-row">No hay empleados registrados.</div>'; return; }
+          el.innerHTML = `
+            <table>
+              <thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+              <tbody>
+                ${emps.map(e => `
+                  <tr>
+                    <td style="font-weight:600;">${e.full_name}</td>
+                    <td style="color:var(--muted);font-size:.82rem;">${e.email || '—'}</td>
+                    <td><span class="chip" style="background:rgba(56,189,248,.1);color:var(--primary);">${e.role}</span></td>
+                    <td>${e.is_active
+                          ? '<span class="chip" style="background:rgba(34,197,94,.1);color:var(--success);">Activo</span>'
+                          : '<span class="chip" style="background:rgba(239,68,68,.1);color:var(--danger);">Inactivo</span>'}
+                    </td>
+                    <td>
+                      <button class="btn btn-ghost btn-sm" onclick="toggleEmployee('${e.id}', ${!e.is_active})">
+                        ${e.is_active ? 'Desactivar' : 'Activar'}
+                      </button>
+                    </td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>`;
+        } catch {
+          document.getElementById('employees-table').innerHTML = '<div class="empty-row">Error al cargar.</div>';
+        }
+      }
+
+      async function toggleEmployee(id, is_active) {
+        try {
+          await window.api.adminToggleEmployee(id, is_active);
+          await loadEmployees();
+        } catch (err) { alert(err.message); }
+      }
+
+      function openNewEmployeeModal() { openModal('modal-employee'); }
+
+      async function submitNewEmployee() {
+        const btn = document.getElementById('emp-submit-btn');
+        const errEl = document.getElementById('emp-error');
+        const payload = {
+          full_name: document.getElementById('emp-name').value.trim(),
+          email:     document.getElementById('emp-email').value.trim(),
+          password:  document.getElementById('emp-password').value,
+          role:      document.getElementById('emp-role').value
+        };
+        if (!payload.full_name || !payload.email || !payload.password) {
+          errEl.textContent = 'Todos los campos son requeridos'; errEl.style.display='block'; return;
+        }
+        errEl.style.display = 'none';
+        btn.disabled = true; btn.textContent = 'Creando...';
+        try {
+          await window.api.adminCreateEmployee(payload);
+          closeModal('modal-employee');
+          document.getElementById('emp-name').value = document.getElementById('emp-email').value = document.getElementById('emp-password').value = '';
+          await loadEmployees();
+        } catch (err) {
+          errEl.textContent = err.message; errEl.style.display = 'block';
+        }
+        btn.disabled = false; btn.textContent = 'Crear empleado';
+      }
+    </script>
+  </body>
+</html>
