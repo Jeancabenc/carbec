@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Catálogo de productos — Carbec Import S.R.L</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Catálogo de productos importados por Carbec Import S.R.L — belleza, hogar, ferretería, eventos y más." />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+
+    <!-- ── Header ── -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand">
+          <img src="img/logo.jpg" alt="Carbec Import S.R.L" class="brand-logo" />
+          <div class="brand-text">
+            <span class="brand-name">CARBEC</span>
+            <span class="brand-subtitle">Import S.R.L.</span>
+          </div>
+        </a>
+
+        <nav class="nav">
+          <a href="index.html" class="nav-link">Inicio</a>
+          <a href="products.html" class="nav-link nav-link-active">Productos</a>
+          <a href="index.html#nosotros" class="nav-link">Nosotros</a>
+          <a href="index.html#contacto" class="nav-link">Contacto</a>
+          <button id="cart-nav-btn" aria-label="Ver carrito">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Carrito
+            <span id="cart-badge"></span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="section">
+        <div class="container">
+          <header class="section-header">
+            <h1>Catálogo de productos</h1>
+            <p>Agrega los productos que necesitas al carrito y envía tu pedido por WhatsApp en segundos.</p>
+          </header>
+
+          <!-- Búsqueda -->
+          <div class="search-bar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="search-input" placeholder="Buscar producto..." autocomplete="off" />
+          </div>
+
+          <!-- Chips de categoría -->
+          <div class="category-bar" id="category-bar">
+            <button class="category-chip is-active" data-category="__all">Todos</button>
+          </div>
+
+          <!-- Grid de productos -->
+          <div id="products-grid" class="products-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="index.html" class="brand" style="color:#fff;">
+              <img src="img/logo.jpg" alt="Carbec" class="brand-logo" style="opacity:.9;" />
+              <div class="brand-text">
+                <span class="brand-name" style="color:#fff;">CARBEC</span>
+                <span class="brand-subtitle" style="color:rgba(255,255,255,.6);">Import S.R.L.</span>
+              </div>
+            </a>
+            <p>Importación y distribución de productos de calidad para el mercado dominicano.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Navegación</h4>
+            <ul>
+              <li><a href="index.html">Inicio</a></li>
+              <li><a href="products.html">Productos</a></li>
+              <li><a href="index.html#nosotros">Nosotros</a></li>
+              <li><a href="index.html#contacto">Contacto</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Contacto</h4>
+            <ul>
+              <li><a href="tel:+18095777989">809-577-7989</a></li>
+              <li><a href="https://wa.me/18095777989" target="_blank">WhatsApp</a></li>
+              <li><span style="opacity:.7;">Moca, Espaillat, RD</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© <span id="year"></span> Carbec Import S.R.L. Todos los derechos reservados.</span>
+          <span>Moca, Espaillat, República Dominicana</span>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      const grid        = document.getElementById('products-grid');
+      const categoryBar = document.getElementById('category-bar');
+      const searchInput = document.getElementById('search-input');
+
+      let activeCategory = '__all';
+      let searchQuery    = '';
+
+      /* ── Helpers ── */
+      function normalizeCategory(cat) { return (cat || 'Sin categoría').trim(); }
+
+      function getCategories(list) {
+        const set = new Set(list.map(p => normalizeCategory(p.category)));
+        return Array.from(set).sort((a, b) => a.localeCompare(b, 'es'));
+      }
+
+      /* ── Filtro ── */
+      function getFiltered() {
+        let list = window.products;
+        if (activeCategory !== '__all') list = list.filter(p => normalizeCategory(p.category) === activeCategory);
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          list = list.filter(p =>
+            p.name.toLowerCase().includes(q) ||
+            (p.shortDescription || '').toLowerCase().includes(q) ||
+            String(p.id).toLowerCase().includes(q)
+          );
+        }
+        return list;
+      }
+
+      /* ── Render chips ── */
+      function renderChips(categories) {
+        const allBtn = categoryBar.querySelector('[data-category="__all"]');
+        categoryBar.innerHTML = '';
+        categoryBar.appendChild(allBtn);
+        categories.forEach(cat => {
+          const btn = document.createElement('button');
+          btn.className = 'category-chip';
+          btn.dataset.category = cat;
+          btn.textContent = cat;
+          categoryBar.appendChild(btn);
+        });
+        updateActiveChip();
+      }
+
+      function updateActiveChip() {
+        categoryBar.querySelectorAll('.category-chip').forEach(btn =>
+          btn.classList.toggle('is-active', btn.dataset.category === activeCategory)
+        );
+      }
+
+      /* ── Render productos ── */
+      function renderProducts(list) {
+        grid.innerHTML = '';
+        if (!list.length) {
+          grid.innerHTML = '<div class="empty-state"><h2>Sin resultados</h2><p>No se encontraron productos con ese criterio.</p></div>';
+          return;
+        }
+
+        list.forEach(product => {
+          const card = document.createElement('article');
+          card.className = 'product-card';
+          const imgSrc = product.mainImage || '';
+          const cat    = normalizeCategory(product.category);
+
+          card.innerHTML = `
+            <div class="product-image-wrapper">
+              <img src="${imgSrc}" alt="${product.name}" class="product-image" loading="lazy" />
+            </div>
+            <div class="product-body">
+              <span class="product-category-tag">${cat}</span>
+              <h2 class="product-title">${product.name}</h2>
+              ${product.shortDescription ? `<p class="product-description">${product.shortDescription}</p>` : ''}
+              <div class="product-actions">
+                <a class="product-link" href="product.html?id=${encodeURIComponent(product.id)}">Detalles</a>
+                <button class="btn-add-cart-sm" data-id="${product.id}" aria-label="Agregar al carrito">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                  Agregar
+                </button>
+              </div>
+            </div>
+          `;
+
+          /* Botón agregar al carrito */
+          card.querySelector('.btn-add-cart-sm').addEventListener('click', function () {
+            const p = window.products.find(x => String(x.id) === String(product.id));
+            if (p && window.cartAPI) {
+              window.cartAPI.add(p);
+              this.classList.add('added');
+              this.textContent = '✓ Agregado';
+              setTimeout(() => {
+                this.classList.remove('added');
+                this.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Agregar`;
+              }, 1500);
+            }
+          });
+
+          grid.appendChild(card);
+        });
+      }
+
+      /* ── Init ── */
+      if (!Array.isArray(window.products) || !window.products.length) {
+        grid.innerHTML = '<p style="color:#b00020;font-weight:600;">No se pudo cargar el catálogo.</p>';
+      } else {
+        const categories = getCategories(window.products);
+        renderChips(categories);
+        renderProducts(getFiltered());
+
+        /* Filtro por URL param */
+        const urlCat = new URLSearchParams(location.search).get('cat');
+        if (urlCat) {
+          const match = categories.find(c => c.toLowerCase() === urlCat.toLowerCase());
+          if (match) {
+            activeCategory = match;
+            updateActiveChip();
+            renderProducts(getFiltered());
+          }
+        }
+
+        /* Eventos */
+        categoryBar.addEventListener('click', e => {
+          const btn = e.target.closest('.category-chip');
+          if (!btn) return;
+          activeCategory = btn.dataset.category;
+          updateActiveChip();
+          renderProducts(getFiltered());
+        });
+
+        let searchTimer;
+        searchInput.addEventListener('input', () => {
+          clearTimeout(searchTimer);
+          searchTimer = setTimeout(() => {
+            searchQuery = searchInput.value.trim();
+            renderProducts(getFiltered());
+          }, 200);
+        });
+      }
+    </script>
+  </body>
+</html>

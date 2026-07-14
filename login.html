@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Iniciar sesión — Carbec Import S.R.L</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+      .auth-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #e8f4f9 0%, #f0f9ff 100%);
+      }
+      .auth-card {
+        background: #fff;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--color-border);
+        width: 100%;
+        max-width: 440px;
+        overflow: hidden;
+      }
+      .auth-card-top {
+        background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+        padding: 2rem 2rem 1.5rem;
+        text-align: center;
+        color: #fff;
+      }
+      .auth-logo {
+        width: 52px;
+        height: 52px;
+        border-radius: var(--radius-md);
+        margin: 0 auto .75rem;
+        display: block;
+      }
+      .auth-card-top h1 { margin: 0 0 .25rem; font-size: 1.25rem; }
+      .auth-card-top p  { margin: 0; font-size: .85rem; opacity: .8; }
+      .auth-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--color-border);
+      }
+      .auth-tab {
+        flex: 1;
+        padding: .85rem;
+        background: none;
+        border: none;
+        border-bottom: 2.5px solid transparent;
+        font-family: inherit;
+        font-size: .9rem;
+        font-weight: 600;
+        color: var(--color-muted);
+        cursor: pointer;
+        transition: color .2s, border-color .2s;
+      }
+      .auth-tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+      .auth-body { padding: 1.75rem 2rem 2rem; }
+      .auth-form { display: flex; flex-direction: column; gap: .85rem; }
+      .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+      .auth-form .btn { width: 100%; margin-top: .25rem; border-radius: var(--radius-md); padding: .7rem; }
+      .auth-error {
+        display: none;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+        border-radius: var(--radius-sm);
+        padding: .6rem .85rem;
+        font-size: .85rem;
+      }
+      .auth-divider { text-align: center; font-size: .8rem; color: var(--color-muted); margin: .25rem 0; }
+      .session-expired {
+        background: #fef3c7;
+        border: 1px solid #fbbf24;
+        color: #92400e;
+        border-radius: var(--radius-sm);
+        padding: .6rem .85rem;
+        font-size: .85rem;
+        margin-bottom: 1rem;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Nav mínimo -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand">
+          <img src="img/logo.jpg" alt="Carbec Import S.R.L" class="brand-logo" />
+          <div class="brand-text">
+            <span class="brand-name">CARBEC</span>
+            <span class="brand-subtitle">Import S.R.L.</span>
+          </div>
+        </a>
+        <nav class="nav">
+          <a href="index.html" class="nav-link">Inicio</a>
+          <a href="products.html" class="nav-link">Productos</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="auth-wrapper">
+      <div class="auth-card">
+        <div class="auth-card-top">
+          <img src="img/logo.jpg" alt="Carbec" class="auth-logo" />
+          <h1>Carbec Import S.R.L</h1>
+          <p>Portal de clientes</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Iniciar sesión</button>
+          <button class="auth-tab" data-tab="register">Crear cuenta</button>
+        </div>
+
+        <div class="auth-body">
+          <div id="session-expired-msg" class="session-expired">
+            Tu sesión expiró. Por favor inicia sesión nuevamente.
+          </div>
+
+          <!-- Login form -->
+          <div id="tab-login">
+            <form class="auth-form" id="login-form" novalidate>
+              <div id="login-error" class="auth-error"></div>
+              <div class="form-group">
+                <label for="login-email">Correo electrónico</label>
+                <input id="login-email" type="email" placeholder="correo@ejemplo.com" required autocomplete="email" />
+              </div>
+              <div class="form-group">
+                <label for="login-password">Contraseña</label>
+                <input id="login-password" type="password" placeholder="Tu contraseña" required autocomplete="current-password" />
+              </div>
+              <button type="submit" class="btn btn-primary" id="login-btn">Iniciar sesión</button>
+            </form>
+            <p class="auth-divider" style="margin-top:1rem;">
+              ¿No tienes cuenta?
+              <button style="background:none;border:none;color:var(--color-primary);font-weight:600;cursor:pointer;font-family:inherit;font-size:.8rem;" onclick="switchTab('register')">Créala aquí</button>
+            </p>
+          </div>
+
+          <!-- Register form -->
+          <div id="tab-register" style="display:none;">
+            <form class="auth-form" id="register-form" novalidate>
+              <div id="register-error" class="auth-error"></div>
+              <div class="form-group">
+                <label for="reg-name">Nombre completo *</label>
+                <input id="reg-name" type="text" placeholder="Tu nombre completo" required autocomplete="name" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reg-email">Correo electrónico *</label>
+                  <input id="reg-email" type="email" placeholder="correo@ejemplo.com" required autocomplete="email" />
+                </div>
+                <div class="form-group">
+                  <label for="reg-phone">Teléfono</label>
+                  <input id="reg-phone" type="tel" placeholder="809-XXX-XXXX" autocomplete="tel" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="reg-password">Contraseña * <small style="color:var(--color-muted);font-weight:400;">(mín. 6 caracteres)</small></label>
+                <input id="reg-password" type="password" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password" />
+              </div>
+              <div class="form-group">
+                <label for="reg-address">Dirección de entrega</label>
+                <input id="reg-address" type="text" placeholder="Calle, número, sector..." />
+              </div>
+              <div class="form-group">
+                <label for="reg-city">Ciudad / Municipio</label>
+                <input id="reg-city" type="text" placeholder="Ej. Santo Domingo" />
+              </div>
+              <button type="submit" class="btn btn-primary" id="register-btn">Crear mi cuenta</button>
+            </form>
+            <p class="auth-divider" style="margin-top:1rem;">
+              ¿Ya tienes cuenta?
+              <button style="background:none;border:none;color:var(--color-primary);font-weight:600;cursor:pointer;font-family:inherit;font-size:.8rem;" onclick="switchTab('login')">Inicia sesión</button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+      // Redirigir si ya está autenticado
+      if (window.api.isLoggedIn()) {
+        window.location.href = window.api.isAdmin() ? 'admin/index.html' : 'dashboard.html';
+      }
+
+      if (new URLSearchParams(location.search).get('session') === 'expired') {
+        document.getElementById('session-expired-msg').style.display = 'block';
+      }
+
+      // ── Tabs ──
+      function switchTab(tab) {
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+        document.getElementById('tab-login').style.display    = tab === 'login'    ? '' : 'none';
+        document.getElementById('tab-register').style.display = tab === 'register' ? '' : 'none';
+      }
+
+      document.querySelectorAll('.auth-tab').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+
+      // ── Login ──
+      document.getElementById('login-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn   = document.getElementById('login-btn');
+        const error = document.getElementById('login-error');
+        const email = document.getElementById('login-email').value.trim();
+        const pass  = document.getElementById('login-password').value;
+
+        error.style.display = 'none';
+        btn.disabled = true;
+        btn.textContent = 'Entrando...';
+
+        try {
+          const res = await window.api.login(email, pass);
+          window.location.href = res.user.is_admin ? 'admin/index.html' : 'dashboard.html';
+        } catch (err) {
+          error.textContent   = err.message;
+          error.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Iniciar sesión';
+        }
+      });
+
+      // ── Register ──
+      document.getElementById('register-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn   = document.getElementById('register-btn');
+        const error = document.getElementById('register-error');
+
+        const payload = {
+          full_name: document.getElementById('reg-name').value.trim(),
+          email:     document.getElementById('reg-email').value.trim(),
+          password:  document.getElementById('reg-password').value,
+          phone:     document.getElementById('reg-phone').value.trim() || undefined,
+          address:   document.getElementById('reg-address').value.trim() || undefined,
+          city:      document.getElementById('reg-city').value.trim() || undefined
+        };
+
+        if (!payload.full_name || !payload.email || !payload.password) {
+          error.textContent = 'Completa los campos obligatorios (*)';
+          error.style.display = 'block';
+          return;
+        }
+        if (payload.password.length < 6) {
+          error.textContent = 'La contraseña debe tener al menos 6 caracteres';
+          error.style.display = 'block';
+          return;
+        }
+
+        error.style.display = 'none';
+        btn.disabled = true;
+        btn.textContent = 'Creando cuenta...';
+
+        try {
+          await window.api.register(payload);
+          window.location.href = 'dashboard.html?welcome=1';
+        } catch (err) {
+          error.textContent   = err.message;
+          error.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Crear mi cuenta';
+        }
+      });
+    </script>
+  </body>
+</html>
