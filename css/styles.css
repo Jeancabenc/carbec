@@ -988,20 +988,19 @@ textarea { border-radius: var(--radius-md); resize: vertical; min-height: 110px;
   align-items: center;
 }
 .brand-card {
-  background: var(--color-surface);
-  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 1rem 1.6rem;
+  overflow: hidden;
+  min-width: 130px;
+  height: 76px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 130px;
-  height: 76px;
-  transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
+  transition: box-shadow var(--transition), transform var(--transition);
   cursor: default;
+  box-shadow: var(--shadow-sm);
 }
-.brand-card:hover { box-shadow: var(--shadow-md); border-color: rgba(43,122,158,.3); transform: translateY(-2px); }
-.brand-card img { max-width: 110px; max-height: 48px; object-fit: contain; transition: filter var(--transition); }
+.brand-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.brand-card img { width: 100%; height: 100%; object-fit: cover; transition: filter var(--transition); display: block; }
 .brand-card:hover img { filter: brightness(1.05); }
 .brand-card-name { font-weight: 700; font-size: .9rem; letter-spacing: .05em; color: var(--color-muted); text-transform: uppercase; }
 
