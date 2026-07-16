@@ -199,15 +199,6 @@
 
         <div class="request-card-body">
 
-          <!-- Tipo de solicitud -->
-          <div class="form-section">
-            <div class="form-section-title">Tipo de solicitud</div>
-            <div class="radio-group">
-              <label><input type="radio" name="tipo-sol" id="tipo-credito" value="Solicitud de Crédito" checked /> Solicitud de Crédito</label>
-              <label><input type="radio" name="tipo-sol" id="tipo-actualizacion" value="Actualización de Datos" /> Actualización de Datos</label>
-            </div>
-          </div>
-
           <!-- Datos del negocio -->
           <div class="form-section">
             <div class="form-section-title">Datos del Negocio</div>
@@ -401,7 +392,6 @@
       });
 
       function recopilarDatos() {
-        const tipo      = document.querySelector('input[name="tipo-sol"]:checked')?.value || '';
         const cliente   = document.getElementById('sol-cliente').value.trim();
         const propietario = document.getElementById('sol-propietario').value.trim();
         const tel       = document.getElementById('sol-tel').value.trim();
@@ -428,7 +418,6 @@
         })).filter(r => r.rs || r.tel);
 
         return {
-          tipo,
           cliente,
           tipoCliente: document.getElementById('sol-tipo-cliente').value,
           direccion:   document.getElementById('sol-direccion').value.trim(),
@@ -450,8 +439,7 @@
       }
 
       function formatearMensaje(d) {
-        let msg = `*FICHA DE CLIENTE — Carbec Import S.R.L.*\n`;
-        msg += `Tipo: ${d.tipo}\n\n`;
+        let msg = `*FICHA DE CLIENTE — Carbec Import S.R.L.*\n\n`;
         msg += `*DATOS DEL NEGOCIO*\n`;
         msg += `Cliente: ${d.cliente}\n`;
         if (d.tipoCliente) msg += `Tipo de Cliente: ${d.tipoCliente}\n`;
