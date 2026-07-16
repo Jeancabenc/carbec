@@ -77,21 +77,19 @@ img { display: block; max-width: 100%; }
 .masthead-text { text-align: left; }
 .masthead-name {
   display: block;
-  font-size: clamp(1.55rem, 3.5vw, 2.1rem);
-  font-weight: 900;
-  letter-spacing: .45em;
+  font-size: clamp(1.4rem, 3.2vw, 1.9rem);
+  font-weight: 400;
+  letter-spacing: .06em;
   color: #fff;
-  text-transform: uppercase;
-  line-height: 1;
+  line-height: 1.15;
   text-shadow: 0 2px 8px rgba(0,0,0,.2);
 }
 .masthead-sub {
   display: block;
   font-size: .72rem;
-  color: rgba(255,255,255,.7);
-  text-transform: uppercase;
-  letter-spacing: .18em;
-  margin-top: .35rem;
+  color: rgba(255,255,255,.65);
+  letter-spacing: .1em;
+  margin-top: .4rem;
 }
 
 .site-header {
@@ -122,8 +120,8 @@ img { display: block; max-width: 100%; }
 }
 .brand-logo   { width: 64px; height: 64px; object-fit: contain; border-radius: var(--radius-sm); }
 .brand-text   { display: flex; flex-direction: column; line-height: 1.15; }
-.brand-name   { font-weight: 700; letter-spacing: .55em; text-transform: uppercase; font-size: .88rem; color: var(--color-primary-dark); }
-.brand-subtitle { font-size: .72rem; text-transform: uppercase; color: var(--color-muted); letter-spacing: .1em; }
+.brand-name   { font-weight: 500; letter-spacing: .04em; font-size: .92rem; color: var(--color-primary-dark); }
+.brand-subtitle { font-size: .7rem; color: var(--color-muted); letter-spacing: .04em; }
 
 .nav { display: flex; align-items: center; gap: .35rem; }
 
@@ -1338,3 +1336,32 @@ textarea { border-radius: var(--radius-md); resize: vertical; min-height: 110px;
 .cls-item { display: flex; flex-direction: column; align-items: center; gap: .2rem; }
 .cls-num { font-size: 1.4rem; font-weight: 800; color: var(--color-primary-dark); }
 .cls-label { font-size: .75rem; color: var(--color-muted); text-transform: uppercase; letter-spacing: .05em; }
+
+/* ── Showcase productos (index, público) ── */
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+.showcase-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+}
+.showcase-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.showcase-img {
+  aspect-ratio: 1 / 1;
+  background: var(--color-primary-xlt);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.showcase-img img { width: 100%; height: 100%; object-fit: cover; }
+.showcase-img-placeholder { font-size: 2.8rem; color: var(--color-muted); opacity: .45; }
+.showcase-body { padding: .85rem 1rem; }
+.showcase-brand { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--color-primary-light); }
+.showcase-body h3 { font-size: .9rem; font-weight: 700; margin: .18rem 0 .2rem; color: var(--color-heading); }
+.showcase-body p  { font-size: .78rem; color: var(--color-muted); }
+.showcase-cta { text-align: center; margin-top: 1.5rem; }

@@ -29,44 +29,28 @@
         text-align: center;
         color: #fff;
       }
-      .auth-logo {
-        width: 52px;
-        height: 52px;
-        border-radius: var(--radius-md);
-        margin: 0 auto .75rem;
-        display: block;
-      }
+      .auth-logo { width: 52px; height: 52px; border-radius: var(--radius-md); margin: 0 auto .75rem; display: block; }
       .auth-card-top h1 { margin: 0 0 .25rem; font-size: 1.25rem; }
       .auth-card-top p  { margin: 0; font-size: .85rem; opacity: .8; }
       .auth-body { padding: 1.75rem 2rem 2rem; }
       .auth-form { display: flex; flex-direction: column; gap: .85rem; }
-      .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
       .auth-form .btn { width: 100%; margin-top: .25rem; border-radius: var(--radius-md); padding: .7rem; }
       .auth-error {
-        display: none;
-        background: #fef2f2;
-        border: 1px solid #fecaca;
-        color: #dc2626;
-        border-radius: var(--radius-sm);
-        padding: .6rem .85rem;
-        font-size: .85rem;
+        display: none; background: #fef2f2; border: 1px solid #fecaca;
+        color: #dc2626; border-radius: var(--radius-sm); padding: .6rem .85rem; font-size: .85rem;
       }
       .auth-divider { text-align: center; font-size: .8rem; color: var(--color-muted); margin: .25rem 0; }
       .session-expired {
-        background: #fef3c7;
-        border: 1px solid #fbbf24;
-        color: #92400e;
-        border-radius: var(--radius-sm);
-        padding: .6rem .85rem;
-        font-size: .85rem;
-        margin-bottom: 1rem;
-        display: none;
+        background: #fef3c7; border: 1px solid #fbbf24; color: #92400e;
+        border-radius: var(--radius-sm); padding: .6rem .85rem; font-size: .85rem;
+        margin-bottom: 1rem; display: none;
       }
-      /* Sección solicitud de cliente */
+
+      /* ── Sección solicitud ── */
       .request-section {
         background: var(--color-surface);
-        border-top: 1px solid var(--color-border);
-        padding: 4rem 1rem;
+        border-top: 3px solid var(--color-primary-xlt);
+        padding: 3.5rem 1rem 4rem;
       }
       .request-card {
         background: #fff;
@@ -74,21 +58,81 @@
         box-shadow: var(--shadow-md);
         border: 1px solid var(--color-border);
         width: 100%;
-        max-width: 540px;
+        max-width: 680px;
         margin: 0 auto;
-        padding: 2.25rem 2.5rem;
+        overflow: hidden;
       }
-      .request-card h2 { margin: 0 0 .4rem; font-size: 1.3rem; }
-      .request-card > p { color: var(--color-muted); font-size: .9rem; margin: 0 0 1.5rem; }
+      .request-card-header {
+        background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+        color: #fff;
+        padding: 1.5rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .request-card-header .rh-icon { font-size: 1.6rem; }
+      .request-card-header h2 { font-size: 1.15rem; margin: 0 0 .2rem; }
+      .request-card-header p  { font-size: .8rem; opacity: .8; margin: 0; }
+      .request-card-body { padding: 1.75rem 2rem 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+      /* Secciones internas del formulario */
+      .form-section { display: flex; flex-direction: column; gap: .75rem; }
+      .form-section-title {
+        font-size: .72rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .1em; color: var(--color-primary-dark);
+        border-bottom: 1.5px solid var(--color-primary-xlt);
+        padding-bottom: .4rem; margin-bottom: .1rem;
+      }
+      .fg { display: flex; flex-direction: column; gap: .28rem; }
+      .fg label { font-size: .8rem; font-weight: 600; color: var(--color-text); }
+      .fg input, .fg select, .fg textarea {
+        padding: .6rem .85rem; border: 1.5px solid var(--color-border);
+        border-radius: 8px; font-size: .875rem; font-family: inherit;
+        outline: none; transition: border-color .15s; background: #fff;
+      }
+      .fg input:focus, .fg select:focus, .fg textarea:focus { border-color: var(--color-primary-light); }
+      .fg textarea { resize: vertical; min-height: 70px; }
+      .fg-row { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+
+      /* Checkboxes y radios */
+      .check-group, .radio-group {
+        display: flex; flex-wrap: wrap; gap: .6rem 1.25rem; margin-top: .15rem;
+      }
+      .check-group label, .radio-group label {
+        display: flex; align-items: center; gap: .35rem;
+        font-size: .84rem; font-weight: 400; color: var(--color-text); cursor: pointer;
+      }
+      .check-group input, .radio-group input { cursor: pointer; accent-color: var(--color-primary); }
+
+      /* Tabla de referencias */
+      .ref-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+      .ref-table th {
+        background: var(--color-primary-xlt); color: var(--color-primary-dark);
+        font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+        padding: .45rem .6rem; text-align: left; border: 1px solid var(--color-border);
+      }
+      .ref-table td { border: 1px solid var(--color-border); padding: .2rem .3rem; }
+      .ref-table input {
+        border: none; padding: .4rem .5rem; font-size: .82rem; width: 100%;
+        font-family: inherit; outline: none; background: transparent;
+      }
+      .ref-table input:focus { background: #f0f9ff; }
+
+      /* Botones de envío */
+      .submit-group { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: .5rem; }
+      .submit-group .btn { flex: 1; justify-content: center; min-width: 200px; padding: .75rem; }
+
       .request-success {
-        display: none;
-        background: #f0fdf4;
-        border: 1px solid #86efac;
-        color: #166534;
-        border-radius: var(--radius-sm);
-        padding: .7rem 1rem;
-        font-size: .88rem;
-        margin-top: .5rem;
+        display: none; background: #f0fdf4; border: 1px solid #86efac;
+        color: #166534; border-radius: var(--radius-sm);
+        padding: .7rem 1rem; font-size: .85rem; margin-top: .5rem;
+      }
+      .request-note { font-size: .75rem; color: var(--color-muted); margin-top: .4rem; line-height: 1.5; }
+
+      @media (max-width: 600px) {
+        .request-card-body { padding: 1.25rem 1rem 1.5rem; }
+        .fg-row { grid-template-columns: 1fr; }
+        .submit-group .btn { min-width: unset; }
       }
     </style>
   </head>
@@ -100,8 +144,7 @@
         <a href="index.html" class="brand">
           <img src="img/logo.jpg" alt="Carbec Import S.R.L" class="brand-logo" />
           <div class="brand-text">
-            <span class="brand-name">CARBEC</span>
-            <span class="brand-subtitle">Import S.R.L.</span>
+            <span class="brand-name">Carbec Import S.R.L.</span>
           </div>
         </a>
         <nav class="nav">
@@ -111,6 +154,7 @@
       </div>
     </header>
 
+    <!-- Login -->
     <div class="auth-wrapper">
       <div class="auth-card">
         <div class="auth-card-top">
@@ -118,12 +162,10 @@
           <h1>Carbec Import S.R.L</h1>
           <p>Portal de clientes</p>
         </div>
-
         <div class="auth-body">
           <div id="session-expired-msg" class="session-expired">
             Tu sesión expiró. Por favor inicia sesión nuevamente.
           </div>
-
           <form class="auth-form" id="login-form" novalidate>
             <div id="login-error" class="auth-error"></div>
             <div class="form-group">
@@ -136,7 +178,6 @@
             </div>
             <button type="submit" class="btn btn-primary" id="login-btn">Iniciar sesión</button>
           </form>
-
           <p class="auth-divider" style="margin-top:1.25rem;">
             ¿Todavía no eres cliente?
             <a href="#solicitar" style="color:var(--color-primary);font-weight:600;font-size:.8rem;">Solicitar acceso ↓</a>
@@ -145,45 +186,195 @@
       </div>
     </div>
 
-    <!-- Solicitar ser cliente -->
+    <!-- Solicitud de crédito / Ficha de cliente -->
     <div class="request-section" id="solicitar">
       <div class="request-card">
-        <h2>Solicitar ser cliente</h2>
-        <p>Complete el formulario y nos pondremos en contacto con usted para evaluar su solicitud y crear su cuenta si es aprobada.</p>
-        <form class="auth-form" id="request-form" novalidate>
-          <div class="form-group">
-            <label for="sol-nombre">Nombre completo *</label>
-            <input id="sol-nombre" type="text" placeholder="Su nombre completo" required />
+        <div class="request-card-header">
+          <div class="rh-icon">📋</div>
+          <div>
+            <h2>Ficha de Cliente</h2>
+            <p>Complete el formulario. Una vez recibida, evaluaremos su solicitud y nos pondremos en contacto.</p>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="sol-empresa">Empresa / Negocio</label>
-              <input id="sol-empresa" type="text" placeholder="Nombre del negocio" />
+        </div>
+
+        <div class="request-card-body">
+
+          <!-- Tipo de solicitud -->
+          <div class="form-section">
+            <div class="form-section-title">Tipo de solicitud</div>
+            <div class="radio-group">
+              <label><input type="radio" name="tipo-sol" id="tipo-credito" value="Solicitud de Crédito" checked /> Solicitud de Crédito</label>
+              <label><input type="radio" name="tipo-sol" id="tipo-actualizacion" value="Actualización de Datos" /> Actualización de Datos</label>
             </div>
-            <div class="form-group">
-              <label for="sol-telefono">Teléfono *</label>
-              <input id="sol-telefono" type="tel" placeholder="809-XXX-XXXX" required />
+          </div>
+
+          <!-- Datos del negocio -->
+          <div class="form-section">
+            <div class="form-section-title">Datos del Negocio</div>
+
+            <div class="fg">
+              <label for="sol-cliente">Cliente (nombre del negocio) *</label>
+              <input id="sol-cliente" type="text" placeholder="Nombre completo del negocio" />
+            </div>
+
+            <div class="fg-row">
+              <div class="fg">
+                <label for="sol-tipo-cliente">Tipo de Cliente</label>
+                <select id="sol-tipo-cliente">
+                  <option value="">Seleccionar...</option>
+                  <option>Mayorista</option>
+                  <option>Minorista</option>
+                  <option>Distribuidor</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+              <div class="fg">
+                <label for="sol-rnc">RNC</label>
+                <input id="sol-rnc" type="text" placeholder="000-00000-0" />
+              </div>
+            </div>
+
+            <div class="fg">
+              <label for="sol-direccion">Dirección</label>
+              <input id="sol-direccion" type="text" placeholder="Calle, sector, municipio..." />
+            </div>
+
+            <div class="fg">
+              <label for="sol-razon">Razón Social</label>
+              <input id="sol-razon" type="text" placeholder="Razón social registrada" />
+            </div>
+
+            <div class="fg-row">
+              <div class="fg">
+                <label for="sol-ciudad">Ciudad</label>
+                <input id="sol-ciudad" type="text" placeholder="Ciudad" />
+              </div>
+              <div class="fg">
+                <label for="sol-zona">Zona</label>
+                <input id="sol-zona" type="text" placeholder="Zona o región" />
+              </div>
+            </div>
+
+            <div class="fg">
+              <label for="sol-tel">Teléfono *</label>
+              <input id="sol-tel" type="tel" placeholder="809-XXX-XXXX" />
+            </div>
+
+            <div class="fg">
+              <label for="sol-email">Correo electrónico</label>
+              <input id="sol-email" type="email" placeholder="correo@negocio.com" />
+            </div>
+
+            <div class="fg">
+              <label>Tipo de Facturación</label>
+              <div class="check-group">
+                <label><input type="checkbox" id="fac-fiscal" /> Valor Fiscal</label>
+                <label><input type="checkbox" id="fac-consumo" /> Consumo</label>
+              </div>
+            </div>
+
+            <div class="fg">
+              <label>Forma de Pago</label>
+              <div class="check-group">
+                <label><input type="checkbox" id="pago-efectivo" /> Efectivo</label>
+                <label><input type="checkbox" id="pago-cheque" /> Cheque</label>
+                <label><input type="checkbox" id="pago-transferencia" /> Transferencia</label>
+                <label><input type="checkbox" id="pago-orden" /> Orden</label>
+              </div>
+            </div>
+
+            <div class="fg">
+              <label for="sol-limite">Límite de Crédito Solicitado (RD$)</label>
+              <input id="sol-limite" type="text" placeholder="Ej. 50,000" />
             </div>
           </div>
-          <div class="form-group">
-            <label for="sol-email">Correo electrónico</label>
-            <input id="sol-email" type="email" placeholder="correo@ejemplo.com" />
+
+          <!-- Datos del propietario / responsable -->
+          <div class="form-section">
+            <div class="form-section-title">Datos del Propietario / Responsable</div>
+
+            <div class="fg">
+              <label for="sol-propietario">Nombre del Propietario Legal *</label>
+              <input id="sol-propietario" type="text" placeholder="Nombre completo" />
+            </div>
+
+            <div class="fg">
+              <label for="sol-prop-dir">Dirección del Propietario</label>
+              <input id="sol-prop-dir" type="text" placeholder="Dirección personal" />
+            </div>
+
+            <div class="fg-row">
+              <div class="fg">
+                <label for="sol-prop-tel">Teléfono del Propietario</label>
+                <input id="sol-prop-tel" type="tel" placeholder="809-XXX-XXXX" />
+              </div>
+              <div class="fg">
+                <label for="sol-cedula">Cédula</label>
+                <input id="sol-cedula" type="text" placeholder="000-0000000-0" />
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="sol-interes">¿Qué tipo de productos le interesan?</label>
-            <textarea id="sol-interes" rows="3" placeholder="Ej. productos de belleza, ferretería, hogar..."></textarea>
+
+          <!-- Referencias comerciales -->
+          <div class="form-section">
+            <div class="form-section-title">Referencias Comerciales</div>
+            <table class="ref-table">
+              <thead>
+                <tr>
+                  <th style="width:42%">Razón Social</th>
+                  <th style="width:30%">Teléfono</th>
+                  <th style="width:28%">Contacto</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input id="ref1-rs" placeholder="Empresa de referencia" /></td>
+                  <td><input id="ref1-tel" placeholder="809-XXX-XXXX" /></td>
+                  <td><input id="ref1-con" placeholder="Nombre" /></td>
+                </tr>
+                <tr>
+                  <td><input id="ref2-rs" placeholder="Empresa de referencia" /></td>
+                  <td><input id="ref2-tel" placeholder="809-XXX-XXXX" /></td>
+                  <td><input id="ref2-con" placeholder="Nombre" /></td>
+                </tr>
+                <tr>
+                  <td><input id="ref3-rs" placeholder="Empresa de referencia" /></td>
+                  <td><input id="ref3-tel" placeholder="809-XXX-XXXX" /></td>
+                  <td><input id="ref3-con" placeholder="Nombre" /></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <button type="button" class="btn btn-primary" style="background:#25d366;" onclick="enviarSolicitud()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:.35rem;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.551 4.1 1.513 5.824L.044 23.506a.5.5 0 00.613.613l5.682-1.469A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.935 0-3.758-.52-5.323-1.424l-.381-.222-3.95 1.021 1.021-3.95-.222-.381A9.967 9.967 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-            Enviar solicitud por WhatsApp
-          </button>
-          <div class="request-success" id="request-ok">✓ Solicitud enviada. En breve nos ponemos en contacto con usted.</div>
-        </form>
+
+          <!-- Botones de envío -->
+          <div class="form-section">
+            <div class="submit-group">
+              <button type="button" class="btn btn-primary" style="background:#25d366;" onclick="enviarPorWhatsApp()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.551 4.1 1.513 5.824L.044 23.506a.5.5 0 00.613.613l5.682-1.469A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.935 0-3.758-.52-5.323-1.424l-.381-.222-3.95 1.021 1.021-3.95-.222-.381A9.967 9.967 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+                Enviar por WhatsApp
+              </button>
+              <button type="button" class="btn btn-primary" onclick="enviarPorCorreo()">
+                ✉️ Enviar por correo
+              </button>
+            </div>
+            <div class="request-success" id="request-ok">
+              ✓ Solicitud enviada. Revisaremos su información y nos pondremos en contacto a la brevedad.
+            </div>
+            <p class="request-note">
+              Al enviar esta solicitud, acepta que Carbec Import S.R.L. revisará la información
+              proporcionada para evaluar su crédito y podrá verificar referencias comerciales.
+            </p>
+          </div>
+
+        </div>
       </div>
     </div>
 
     <script src="js/api.js"></script>
     <script>
+      // Correo para recibir solicitudes — cambiar por el correo de la empresa
+      const CORREO_SOLICITUDES = 'AGREGAR_CORREO_AQUI';
+
       if (window.api.isLoggedIn()) {
         window.location.href = window.api.isAdmin() ? 'admin/index.html' : 'dashboard.html';
       }
@@ -198,42 +389,112 @@
         const error = document.getElementById('login-error');
         const email = document.getElementById('login-email').value.trim();
         const pass  = document.getElementById('login-password').value;
-
         error.style.display = 'none';
-        btn.disabled = true;
-        btn.textContent = 'Entrando...';
-
+        btn.disabled = true; btn.textContent = 'Entrando...';
         try {
           const res = await window.api.login(email, pass);
           window.location.href = res.user.is_admin ? 'admin/index.html' : 'dashboard.html';
         } catch (err) {
-          error.textContent   = err.message;
-          error.style.display = 'block';
-          btn.disabled = false;
-          btn.textContent = 'Iniciar sesión';
+          error.textContent = err.message; error.style.display = 'block';
+          btn.disabled = false; btn.textContent = 'Iniciar sesión';
         }
       });
 
-      function enviarSolicitud() {
-        const nombre   = document.getElementById('sol-nombre').value.trim();
-        const empresa  = document.getElementById('sol-empresa').value.trim();
-        const telefono = document.getElementById('sol-telefono').value.trim();
-        const email    = document.getElementById('sol-email').value.trim();
-        const interes  = document.getElementById('sol-interes').value.trim();
+      function recopilarDatos() {
+        const tipo      = document.querySelector('input[name="tipo-sol"]:checked')?.value || '';
+        const cliente   = document.getElementById('sol-cliente').value.trim();
+        const propietario = document.getElementById('sol-propietario').value.trim();
+        const tel       = document.getElementById('sol-tel').value.trim();
 
-        if (!nombre || !telefono) {
-          alert('Por favor completa tu nombre y teléfono.');
-          return;
+        if (!cliente || !propietario || !tel) {
+          alert('Por favor completa los campos obligatorios: Nombre del negocio, Propietario y Teléfono.');
+          return null;
         }
 
-        const msg = `*Solicitud de cuenta cliente — Carbec Import*\n\n` +
-          `Nombre: ${nombre}\n` +
-          `Empresa: ${empresa || 'No indicada'}\n` +
-          `Teléfono: ${telefono}\n` +
-          `Correo: ${email || 'No indicado'}\n` +
-          `Interés: ${interes || 'No indicado'}`;
+        const facturacion = [];
+        if (document.getElementById('fac-fiscal').checked)  facturacion.push('Valor Fiscal');
+        if (document.getElementById('fac-consumo').checked) facturacion.push('Consumo');
 
+        const pago = [];
+        if (document.getElementById('pago-efectivo').checked)      pago.push('Efectivo');
+        if (document.getElementById('pago-cheque').checked)         pago.push('Cheque');
+        if (document.getElementById('pago-transferencia').checked)  pago.push('Transferencia');
+        if (document.getElementById('pago-orden').checked)          pago.push('Orden');
+
+        const refs = [1,2,3].map(i => ({
+          rs:  document.getElementById(`ref${i}-rs`).value.trim(),
+          tel: document.getElementById(`ref${i}-tel`).value.trim(),
+          con: document.getElementById(`ref${i}-con`).value.trim()
+        })).filter(r => r.rs || r.tel);
+
+        return {
+          tipo,
+          cliente,
+          tipoCliente: document.getElementById('sol-tipo-cliente').value,
+          direccion:   document.getElementById('sol-direccion').value.trim(),
+          rnc:         document.getElementById('sol-rnc').value.trim(),
+          razon:       document.getElementById('sol-razon').value.trim(),
+          ciudad:      document.getElementById('sol-ciudad').value.trim(),
+          zona:        document.getElementById('sol-zona').value.trim(),
+          tel,
+          email:       document.getElementById('sol-email').value.trim(),
+          facturacion: facturacion.join(', ') || 'No indicado',
+          pago:        pago.join(', ') || 'No indicado',
+          limite:      document.getElementById('sol-limite').value.trim(),
+          propietario,
+          propDir:     document.getElementById('sol-prop-dir').value.trim(),
+          propTel:     document.getElementById('sol-prop-tel').value.trim(),
+          cedula:      document.getElementById('sol-cedula').value.trim(),
+          refs
+        };
+      }
+
+      function formatearMensaje(d) {
+        let msg = `*FICHA DE CLIENTE — Carbec Import S.R.L.*\n`;
+        msg += `Tipo: ${d.tipo}\n\n`;
+        msg += `*DATOS DEL NEGOCIO*\n`;
+        msg += `Cliente: ${d.cliente}\n`;
+        if (d.tipoCliente) msg += `Tipo de Cliente: ${d.tipoCliente}\n`;
+        if (d.razon)       msg += `Razón Social: ${d.razon}\n`;
+        if (d.direccion)   msg += `Dirección: ${d.direccion}\n`;
+        if (d.rnc)         msg += `RNC: ${d.rnc}\n`;
+        if (d.ciudad)      msg += `Ciudad: ${d.ciudad}\n`;
+        if (d.zona)        msg += `Zona: ${d.zona}\n`;
+        msg += `Teléfono: ${d.tel}\n`;
+        if (d.email)       msg += `Correo: ${d.email}\n`;
+        msg += `Facturación: ${d.facturacion}\n`;
+        msg += `Forma de Pago: ${d.pago}\n`;
+        if (d.limite)      msg += `Límite solicitado: RD$ ${d.limite}\n`;
+
+        msg += `\n*DATOS DEL PROPIETARIO*\n`;
+        msg += `Nombre: ${d.propietario}\n`;
+        if (d.propDir) msg += `Dirección: ${d.propDir}\n`;
+        if (d.propTel) msg += `Teléfono: ${d.propTel}\n`;
+        if (d.cedula)  msg += `Cédula: ${d.cedula}\n`;
+
+        if (d.refs.length) {
+          msg += `\n*REFERENCIAS COMERCIALES*\n`;
+          d.refs.forEach((r, i) => {
+            msg += `Ref. ${i+1}: ${r.rs}${r.tel ? ' | '+r.tel : ''}${r.con ? ' | '+r.con : ''}\n`;
+          });
+        }
+        return msg;
+      }
+
+      function enviarPorWhatsApp() {
+        const d = recopilarDatos();
+        if (!d) return;
+        const msg = formatearMensaje(d);
         window.open('https://wa.me/18294713805?text=' + encodeURIComponent(msg), '_blank');
+        document.getElementById('request-ok').style.display = 'block';
+      }
+
+      function enviarPorCorreo() {
+        const d = recopilarDatos();
+        if (!d) return;
+        const asunto = `Ficha de Cliente — ${d.cliente}`;
+        const cuerpo = formatearMensaje(d).replace(/\*/g, '');
+        window.location.href = `mailto:${CORREO_SOLICITUDES}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
         document.getElementById('request-ok').style.display = 'block';
       }
     </script>
