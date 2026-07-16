@@ -102,6 +102,8 @@
     <script src="js/cart.js"></script>
     <script src="js/api.js"></script>
     <script>
+      if (!window.api.isLoggedIn()) { window.location.replace('login.html'); }
+
       document.getElementById('year').textContent = new Date().getFullYear();
 
       const grid        = document.getElementById('products-grid');

@@ -38,24 +38,6 @@
       }
       .auth-card-top h1 { margin: 0 0 .25rem; font-size: 1.25rem; }
       .auth-card-top p  { margin: 0; font-size: .85rem; opacity: .8; }
-      .auth-tabs {
-        display: flex;
-        border-bottom: 1px solid var(--color-border);
-      }
-      .auth-tab {
-        flex: 1;
-        padding: .85rem;
-        background: none;
-        border: none;
-        border-bottom: 2.5px solid transparent;
-        font-family: inherit;
-        font-size: .9rem;
-        font-weight: 600;
-        color: var(--color-muted);
-        cursor: pointer;
-        transition: color .2s, border-color .2s;
-      }
-      .auth-tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
       .auth-body { padding: 1.75rem 2rem 2rem; }
       .auth-form { display: flex; flex-direction: column; gap: .85rem; }
       .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
@@ -80,6 +62,34 @@
         margin-bottom: 1rem;
         display: none;
       }
+      /* Sección solicitud de cliente */
+      .request-section {
+        background: var(--color-surface);
+        border-top: 1px solid var(--color-border);
+        padding: 4rem 1rem;
+      }
+      .request-card {
+        background: #fff;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--color-border);
+        width: 100%;
+        max-width: 540px;
+        margin: 0 auto;
+        padding: 2.25rem 2.5rem;
+      }
+      .request-card h2 { margin: 0 0 .4rem; font-size: 1.3rem; }
+      .request-card > p { color: var(--color-muted); font-size: .9rem; margin: 0 0 1.5rem; }
+      .request-success {
+        display: none;
+        background: #f0fdf4;
+        border: 1px solid #86efac;
+        color: #166534;
+        border-radius: var(--radius-sm);
+        padding: .7rem 1rem;
+        font-size: .88rem;
+        margin-top: .5rem;
+      }
     </style>
   </head>
   <body>
@@ -96,7 +106,7 @@
         </a>
         <nav class="nav">
           <a href="index.html" class="nav-link">Inicio</a>
-          <a href="products.html" class="nav-link">Productos</a>
+          <a href="index.html#contacto" class="nav-link">Contacto</a>
         </nav>
       </div>
     </header>
@@ -109,81 +119,71 @@
           <p>Portal de clientes</p>
         </div>
 
-        <!-- Tabs -->
-        <div class="auth-tabs">
-          <button class="auth-tab active" data-tab="login">Iniciar sesión</button>
-          <button class="auth-tab" data-tab="register">Crear cuenta</button>
-        </div>
-
         <div class="auth-body">
           <div id="session-expired-msg" class="session-expired">
             Tu sesión expiró. Por favor inicia sesión nuevamente.
           </div>
 
-          <!-- Login form -->
-          <div id="tab-login">
-            <form class="auth-form" id="login-form" novalidate>
-              <div id="login-error" class="auth-error"></div>
-              <div class="form-group">
-                <label for="login-email">Correo electrónico</label>
-                <input id="login-email" type="email" placeholder="correo@ejemplo.com" required autocomplete="email" />
-              </div>
-              <div class="form-group">
-                <label for="login-password">Contraseña</label>
-                <input id="login-password" type="password" placeholder="Tu contraseña" required autocomplete="current-password" />
-              </div>
-              <button type="submit" class="btn btn-primary" id="login-btn">Iniciar sesión</button>
-            </form>
-            <p class="auth-divider" style="margin-top:1rem;">
-              ¿No tienes cuenta?
-              <button style="background:none;border:none;color:var(--color-primary);font-weight:600;cursor:pointer;font-family:inherit;font-size:.8rem;" onclick="switchTab('register')">Créala aquí</button>
-            </p>
-          </div>
+          <form class="auth-form" id="login-form" novalidate>
+            <div id="login-error" class="auth-error"></div>
+            <div class="form-group">
+              <label for="login-email">Correo electrónico</label>
+              <input id="login-email" type="email" placeholder="correo@ejemplo.com" required autocomplete="email" />
+            </div>
+            <div class="form-group">
+              <label for="login-password">Contraseña</label>
+              <input id="login-password" type="password" placeholder="Tu contraseña" required autocomplete="current-password" />
+            </div>
+            <button type="submit" class="btn btn-primary" id="login-btn">Iniciar sesión</button>
+          </form>
 
-          <!-- Register form -->
-          <div id="tab-register" style="display:none;">
-            <form class="auth-form" id="register-form" novalidate>
-              <div id="register-error" class="auth-error"></div>
-              <div class="form-group">
-                <label for="reg-name">Nombre completo *</label>
-                <input id="reg-name" type="text" placeholder="Tu nombre completo" required autocomplete="name" />
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="reg-email">Correo electrónico *</label>
-                  <input id="reg-email" type="email" placeholder="correo@ejemplo.com" required autocomplete="email" />
-                </div>
-                <div class="form-group">
-                  <label for="reg-phone">Teléfono</label>
-                  <input id="reg-phone" type="tel" placeholder="809-XXX-XXXX" autocomplete="tel" />
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="reg-password">Contraseña * <small style="color:var(--color-muted);font-weight:400;">(mín. 6 caracteres)</small></label>
-                <input id="reg-password" type="password" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password" />
-              </div>
-              <div class="form-group">
-                <label for="reg-address">Dirección de entrega</label>
-                <input id="reg-address" type="text" placeholder="Calle, número, sector..." />
-              </div>
-              <div class="form-group">
-                <label for="reg-city">Ciudad / Municipio</label>
-                <input id="reg-city" type="text" placeholder="Ej. Santo Domingo" />
-              </div>
-              <button type="submit" class="btn btn-primary" id="register-btn">Crear mi cuenta</button>
-            </form>
-            <p class="auth-divider" style="margin-top:1rem;">
-              ¿Ya tienes cuenta?
-              <button style="background:none;border:none;color:var(--color-primary);font-weight:600;cursor:pointer;font-family:inherit;font-size:.8rem;" onclick="switchTab('login')">Inicia sesión</button>
-            </p>
-          </div>
+          <p class="auth-divider" style="margin-top:1.25rem;">
+            ¿Todavía no eres cliente?
+            <a href="#solicitar" style="color:var(--color-primary);font-weight:600;font-size:.8rem;">Solicitar acceso ↓</a>
+          </p>
         </div>
+      </div>
+    </div>
+
+    <!-- Solicitar ser cliente -->
+    <div class="request-section" id="solicitar">
+      <div class="request-card">
+        <h2>Solicitar ser cliente</h2>
+        <p>Complete el formulario y nos pondremos en contacto con usted para evaluar su solicitud y crear su cuenta si es aprobada.</p>
+        <form class="auth-form" id="request-form" novalidate>
+          <div class="form-group">
+            <label for="sol-nombre">Nombre completo *</label>
+            <input id="sol-nombre" type="text" placeholder="Su nombre completo" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="sol-empresa">Empresa / Negocio</label>
+              <input id="sol-empresa" type="text" placeholder="Nombre del negocio" />
+            </div>
+            <div class="form-group">
+              <label for="sol-telefono">Teléfono *</label>
+              <input id="sol-telefono" type="tel" placeholder="809-XXX-XXXX" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="sol-email">Correo electrónico</label>
+            <input id="sol-email" type="email" placeholder="correo@ejemplo.com" />
+          </div>
+          <div class="form-group">
+            <label for="sol-interes">¿Qué tipo de productos le interesan?</label>
+            <textarea id="sol-interes" rows="3" placeholder="Ej. productos de belleza, ferretería, hogar..."></textarea>
+          </div>
+          <button type="button" class="btn btn-primary" style="background:#25d366;" onclick="enviarSolicitud()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:.35rem;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.551 4.1 1.513 5.824L.044 23.506a.5.5 0 00.613.613l5.682-1.469A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.935 0-3.758-.52-5.323-1.424l-.381-.222-3.95 1.021 1.021-3.95-.222-.381A9.967 9.967 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+            Enviar solicitud por WhatsApp
+          </button>
+          <div class="request-success" id="request-ok">✓ Solicitud enviada. En breve nos ponemos en contacto con usted.</div>
+        </form>
       </div>
     </div>
 
     <script src="js/api.js"></script>
     <script>
-      // Redirigir si ya está autenticado
       if (window.api.isLoggedIn()) {
         window.location.href = window.api.isAdmin() ? 'admin/index.html' : 'dashboard.html';
       }
@@ -192,18 +192,6 @@
         document.getElementById('session-expired-msg').style.display = 'block';
       }
 
-      // ── Tabs ──
-      function switchTab(tab) {
-        document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-        document.getElementById('tab-login').style.display    = tab === 'login'    ? '' : 'none';
-        document.getElementById('tab-register').style.display = tab === 'register' ? '' : 'none';
-      }
-
-      document.querySelectorAll('.auth-tab').forEach(btn => {
-        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-      });
-
-      // ── Login ──
       document.getElementById('login-form').addEventListener('submit', async e => {
         e.preventDefault();
         const btn   = document.getElementById('login-btn');
@@ -226,46 +214,28 @@
         }
       });
 
-      // ── Register ──
-      document.getElementById('register-form').addEventListener('submit', async e => {
-        e.preventDefault();
-        const btn   = document.getElementById('register-btn');
-        const error = document.getElementById('register-error');
+      function enviarSolicitud() {
+        const nombre   = document.getElementById('sol-nombre').value.trim();
+        const empresa  = document.getElementById('sol-empresa').value.trim();
+        const telefono = document.getElementById('sol-telefono').value.trim();
+        const email    = document.getElementById('sol-email').value.trim();
+        const interes  = document.getElementById('sol-interes').value.trim();
 
-        const payload = {
-          full_name: document.getElementById('reg-name').value.trim(),
-          email:     document.getElementById('reg-email').value.trim(),
-          password:  document.getElementById('reg-password').value,
-          phone:     document.getElementById('reg-phone').value.trim() || undefined,
-          address:   document.getElementById('reg-address').value.trim() || undefined,
-          city:      document.getElementById('reg-city').value.trim() || undefined
-        };
-
-        if (!payload.full_name || !payload.email || !payload.password) {
-          error.textContent = 'Completa los campos obligatorios (*)';
-          error.style.display = 'block';
-          return;
-        }
-        if (payload.password.length < 6) {
-          error.textContent = 'La contraseña debe tener al menos 6 caracteres';
-          error.style.display = 'block';
+        if (!nombre || !telefono) {
+          alert('Por favor completa tu nombre y teléfono.');
           return;
         }
 
-        error.style.display = 'none';
-        btn.disabled = true;
-        btn.textContent = 'Creando cuenta...';
+        const msg = `*Solicitud de cuenta cliente — Carbec Import*\n\n` +
+          `Nombre: ${nombre}\n` +
+          `Empresa: ${empresa || 'No indicada'}\n` +
+          `Teléfono: ${telefono}\n` +
+          `Correo: ${email || 'No indicado'}\n` +
+          `Interés: ${interes || 'No indicado'}`;
 
-        try {
-          await window.api.register(payload);
-          window.location.href = 'dashboard.html?welcome=1';
-        } catch (err) {
-          error.textContent   = err.message;
-          error.style.display = 'block';
-          btn.disabled = false;
-          btn.textContent = 'Crear mi cuenta';
-        }
-      });
+        window.open('https://wa.me/18294713805?text=' + encodeURIComponent(msg), '_blank');
+        document.getElementById('request-ok').style.display = 'block';
+      }
     </script>
   </body>
 </html>
