@@ -216,7 +216,14 @@
                   <option>Mayorista</option>
                   <option>Minorista</option>
                   <option>Distribuidor</option>
-                  <option>Otro</option>
+                  <option>Canal Modernos (Supermercado / Minimarket)</option>
+                  <option>Tiendas</option>
+                  <option>Papelería / Librería</option>
+                  <option>Repuestos</option>
+                  <option>Ferretería</option>
+                  <option>Hotel</option>
+                  <option>Farmacéutico</option>
+                  <option>Otros</option>
                 </select>
               </div>
               <div class="fg">
@@ -275,28 +282,34 @@
             </div>
 
             <div class="fg">
-              <label for="sol-limite">Límite de Crédito Solicitado (RD$)</label>
+              <label for="sol-limite">Límite de Crédito Solicitado (RD$) <span style="font-weight:400;color:var(--color-muted);">— Opcional</span></label>
               <input id="sol-limite" type="text" placeholder="Ej. 50,000" />
             </div>
           </div>
 
           <!-- Datos del propietario / responsable -->
           <div class="form-section">
-            <div class="form-section-title">Datos del Propietario / Responsable</div>
+            <div class="form-section-title">Datos del Solicitante / Propietario</div>
+            <p style="font-size:.78rem;color:var(--color-muted);margin:-.25rem 0 .5rem;">Si quien completa este formulario no es el dueño del negocio, complete sus propios datos.</p>
 
             <div class="fg">
-              <label for="sol-propietario">Nombre del Propietario Legal *</label>
+              <label for="sol-propietario">Nombre del Solicitante / Propietario *</label>
               <input id="sol-propietario" type="text" placeholder="Nombre completo" />
             </div>
 
             <div class="fg">
-              <label for="sol-prop-dir">Dirección del Propietario</label>
+              <label for="sol-puesto">Puesto o cargo en la empresa <span style="font-weight:400;color:var(--color-muted);">— Si aplica</span></label>
+              <input id="sol-puesto" type="text" placeholder="Ej. Gerente, Encargado de compras..." />
+            </div>
+
+            <div class="fg">
+              <label for="sol-prop-dir">Dirección</label>
               <input id="sol-prop-dir" type="text" placeholder="Dirección personal" />
             </div>
 
             <div class="fg-row">
               <div class="fg">
-                <label for="sol-prop-tel">Teléfono del Propietario</label>
+                <label for="sol-prop-tel">Teléfono</label>
                 <input id="sol-prop-tel" type="tel" placeholder="809-XXX-XXXX" />
               </div>
               <div class="fg">
@@ -332,6 +345,16 @@
                   <td><input id="ref3-rs" placeholder="Empresa de referencia" /></td>
                   <td><input id="ref3-tel" placeholder="809-XXX-XXXX" /></td>
                   <td><input id="ref3-con" placeholder="Nombre" /></td>
+                </tr>
+                <tr>
+                  <td><input id="ref4-rs" placeholder="Empresa de referencia" /></td>
+                  <td><input id="ref4-tel" placeholder="809-XXX-XXXX" /></td>
+                  <td><input id="ref4-con" placeholder="Nombre" /></td>
+                </tr>
+                <tr>
+                  <td><input id="ref5-rs" placeholder="Empresa de referencia" /></td>
+                  <td><input id="ref5-tel" placeholder="809-XXX-XXXX" /></td>
+                  <td><input id="ref5-con" placeholder="Nombre" /></td>
                 </tr>
               </tbody>
             </table>
@@ -411,7 +434,7 @@
         if (document.getElementById('pago-transferencia').checked)  pago.push('Transferencia');
         if (document.getElementById('pago-orden').checked)          pago.push('Orden');
 
-        const refs = [1,2,3].map(i => ({
+        const refs = [1,2,3,4,5].map(i => ({
           rs:  document.getElementById(`ref${i}-rs`).value.trim(),
           tel: document.getElementById(`ref${i}-tel`).value.trim(),
           con: document.getElementById(`ref${i}-con`).value.trim()
@@ -431,6 +454,7 @@
           pago:        pago.join(', ') || 'No indicado',
           limite:      document.getElementById('sol-limite').value.trim(),
           propietario,
+          puesto:      document.getElementById('sol-puesto').value.trim(),
           propDir:     document.getElementById('sol-prop-dir').value.trim(),
           propTel:     document.getElementById('sol-prop-tel').value.trim(),
           cedula:      document.getElementById('sol-cedula').value.trim(),
@@ -454,8 +478,9 @@
         msg += `Forma de Pago: ${d.pago}\n`;
         if (d.limite)      msg += `Límite solicitado: RD$ ${d.limite}\n`;
 
-        msg += `\n*DATOS DEL PROPIETARIO*\n`;
+        msg += `\n*DATOS DEL SOLICITANTE / PROPIETARIO*\n`;
         msg += `Nombre: ${d.propietario}\n`;
+        if (d.puesto)  msg += `Puesto: ${d.puesto}\n`;
         if (d.propDir) msg += `Dirección: ${d.propDir}\n`;
         if (d.propTel) msg += `Teléfono: ${d.propTel}\n`;
         if (d.cedula)  msg += `Cédula: ${d.cedula}\n`;
