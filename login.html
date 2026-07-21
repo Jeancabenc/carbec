@@ -287,34 +287,49 @@
             </div>
           </div>
 
-          <!-- Datos del propietario / responsable -->
+          <!-- Datos del propietario (obligatorio) -->
           <div class="form-section">
-            <div class="form-section-title">Datos del Solicitante / Propietario</div>
-            <p style="font-size:.78rem;color:var(--color-muted);margin:-.25rem 0 .5rem;">Si quien completa este formulario no es el dueño del negocio, complete sus propios datos.</p>
+            <div class="form-section-title">Datos del Propietario Legal</div>
 
             <div class="fg">
-              <label for="sol-propietario">Nombre del Solicitante / Propietario *</label>
-              <input id="sol-propietario" type="text" placeholder="Nombre completo" />
+              <label for="sol-propietario">Nombre del Propietario Legal *</label>
+              <input id="sol-propietario" type="text" placeholder="Nombre completo del dueño" />
             </div>
 
             <div class="fg">
-              <label for="sol-puesto">Puesto o cargo en la empresa <span style="font-weight:400;color:var(--color-muted);">— Si aplica</span></label>
-              <input id="sol-puesto" type="text" placeholder="Ej. Gerente, Encargado de compras..." />
-            </div>
-
-            <div class="fg">
-              <label for="sol-prop-dir">Dirección</label>
+              <label for="sol-prop-dir">Dirección del Propietario</label>
               <input id="sol-prop-dir" type="text" placeholder="Dirección personal" />
             </div>
 
             <div class="fg-row">
               <div class="fg">
-                <label for="sol-prop-tel">Teléfono</label>
+                <label for="sol-prop-tel">Teléfono del Propietario</label>
                 <input id="sol-prop-tel" type="tel" placeholder="809-XXX-XXXX" />
               </div>
               <div class="fg">
-                <label for="sol-cedula">Cédula</label>
+                <label for="sol-cedula">Cédula del Propietario</label>
                 <input id="sol-cedula" type="text" placeholder="000-0000000-0" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Datos del encargado (opcional) -->
+          <div class="form-section">
+            <div class="form-section-title">Datos del Encargado <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--color-muted);font-size:.75rem;">— Solo si quien llena no es el propietario</span></div>
+
+            <div class="fg">
+              <label for="sol-encargado">Nombre del Encargado</label>
+              <input id="sol-encargado" type="text" placeholder="Nombre completo del encargado" />
+            </div>
+
+            <div class="fg-row">
+              <div class="fg">
+                <label for="sol-puesto">Puesto o cargo</label>
+                <input id="sol-puesto" type="text" placeholder="Ej. Gerente, Encargado de compras..." />
+              </div>
+              <div class="fg">
+                <label for="sol-enc-tel">Teléfono del Encargado</label>
+                <input id="sol-enc-tel" type="tel" placeholder="809-XXX-XXXX" />
               </div>
             </div>
           </div>
@@ -454,10 +469,12 @@
           pago:        pago.join(', ') || 'No indicado',
           limite:      document.getElementById('sol-limite').value.trim(),
           propietario,
-          puesto:      document.getElementById('sol-puesto').value.trim(),
           propDir:     document.getElementById('sol-prop-dir').value.trim(),
           propTel:     document.getElementById('sol-prop-tel').value.trim(),
           cedula:      document.getElementById('sol-cedula').value.trim(),
+          encargado:   document.getElementById('sol-encargado').value.trim(),
+          puesto:      document.getElementById('sol-puesto').value.trim(),
+          encTel:      document.getElementById('sol-enc-tel').value.trim(),
           refs
         };
       }
@@ -478,12 +495,18 @@
         msg += `Forma de Pago: ${d.pago}\n`;
         if (d.limite)      msg += `Límite solicitado: RD$ ${d.limite}\n`;
 
-        msg += `\n*DATOS DEL SOLICITANTE / PROPIETARIO*\n`;
+        msg += `\n*DATOS DEL PROPIETARIO*\n`;
         msg += `Nombre: ${d.propietario}\n`;
-        if (d.puesto)  msg += `Puesto: ${d.puesto}\n`;
         if (d.propDir) msg += `Dirección: ${d.propDir}\n`;
         if (d.propTel) msg += `Teléfono: ${d.propTel}\n`;
         if (d.cedula)  msg += `Cédula: ${d.cedula}\n`;
+
+        if (d.encargado) {
+          msg += `\n*DATOS DEL ENCARGADO*\n`;
+          msg += `Nombre: ${d.encargado}\n`;
+          if (d.puesto)  msg += `Puesto: ${d.puesto}\n`;
+          if (d.encTel)  msg += `Teléfono: ${d.encTel}\n`;
+        }
 
         if (d.refs.length) {
           msg += `\n*REFERENCIAS COMERCIALES*\n`;
