@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="css/styles.css" />
   <style>
-    /* ── Base ── */
+    /* Base */
     body { background: #f0f4f8; min-height: 100vh; }
 
-    /* ── Login ── */
+    /* Login */
     .emp-login-wrap {
       min-height: 100vh; display: flex; align-items: center;
       justify-content: center; padding: 2rem 1rem;
@@ -43,7 +43,7 @@
       color: #dc2626; border-radius: 7px; padding: .55rem .8rem; font-size: .82rem;
     }
 
-    /* ── App shell ── */
+    /* App shell */
     #app { display: none; min-height: 100vh; }
 
     .emp-header {
@@ -65,7 +65,7 @@
     }
     .emp-logout:hover { background: rgba(255,255,255,.25); }
 
-    /* ── Tabs ── */
+    /* Tabs */
     .emp-tabs {
       display: flex; gap: 0; background: #fff;
       border-bottom: 2px solid #e2e8f0;
@@ -80,12 +80,12 @@
     .emp-tab.active { color: #1a5373; border-bottom-color: #1a5373; }
     .emp-tab:hover:not(.active) { color: #2b7a9e; }
 
-    /* ── Content ── */
+    /* Content */
     .emp-content { padding: 1.75rem 1.5rem; max-width: 1100px; margin: 0 auto; }
     .panel { display: none; }
     .panel.active { display: block; }
 
-    /* ── Stats ── */
+    /* Stats */
     .stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
     .stat-card {
       background: #fff; border-radius: 12px; padding: 1.25rem 1.5rem;
@@ -97,7 +97,7 @@
     .stat-num  { font-size: 2rem; font-weight: 800; color: #1e2532; line-height: 1; }
     .stat-lbl  { font-size: .78rem; color: #64748b; margin-top: .2rem; }
 
-    /* ── Tables ── */
+    /* Tables */
     .table-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.07); overflow: hidden; }
     .table-card-header {
       padding: 1rem 1.25rem; display: flex; align-items: center;
@@ -114,7 +114,7 @@
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: #f8fafc; }
 
-    /* ── Badges de estado ── */
+    /* Badges de estado */
     .badge-estado {
       display: inline-block; padding: .22rem .65rem; border-radius: 20px;
       font-size: .72rem; font-weight: 700; letter-spacing: .04em;
@@ -126,7 +126,7 @@
     .est-activo      { background: #d1fae5; color: #065f46; }
     .est-inactivo    { background: #f1f5f9; color: #64748b; }
 
-    /* ── Acciones de tabla ── */
+    /* Acciones de tabla */
     .tbl-actions { display: flex; gap: .4rem; flex-wrap: wrap; }
     .btn-tbl {
       padding: .28rem .65rem; font-size: .75rem; border-radius: 6px;
@@ -141,7 +141,7 @@
     .btn-tbl-warn     { border-color: #f59e0b; color: #92400e; background: transparent; }
     .btn-tbl-warn:hover     { background: #f59e0b; color: #fff; }
 
-    /* ── Modal ── */
+    /* Modal */
     .modal-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,.45); z-index: 200;
@@ -175,16 +175,16 @@
     .btn-modal-cancel  { background: #f1f5f9; color: #64748b; }
     .btn-modal-cancel:hover { background: #e2e8f0; }
 
-    /* ── Solicitud detalle ── */
+    /* Solicitud detalle */
     .sol-detail { display: flex; flex-direction: column; gap: .5rem; font-size: .85rem; }
     .sol-detail dt { font-weight: 700; color: #64748b; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .1rem; }
     .sol-detail dd { color: #1e2532; margin: 0 0 .5rem; }
     .sol-section-title { font-weight: 700; color: #1a5373; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; margin: .75rem 0 .25rem; border-bottom: 1px solid #e2e8f0; padding-bottom: .3rem; }
 
-    /* ── Vacío ── */
+    /* Vacío */
     .empty-row td { text-align: center; color: #94a3b8; padding: 2.5rem; font-size: .85rem; }
 
-    /* ── Add button ── */
+    /* Add button */
     .btn-add {
       background: #1a5373; color: #fff; border: none; border-radius: 9px;
       padding: .5rem 1.1rem; font-size: .85rem; font-weight: 600; cursor: pointer;
@@ -192,7 +192,7 @@
     }
     .btn-add:hover { background: #0b2e42; }
 
-    /* ── Notas ── */
+    /* Notas */
     .info-note {
       background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 9px;
       padding: .75rem 1rem; font-size: .82rem; color: #1e40af; margin-bottom: 1.25rem;
@@ -207,7 +207,7 @@
 </head>
 <body>
 
-<!-- ── Login ── -->
+<!-- Login -->
 <div id="login-screen">
   <div class="emp-login-wrap">
     <div class="emp-login-card">
@@ -225,7 +225,7 @@
   </div>
 </div>
 
-<!-- ── App ── -->
+<!-- App -->
 <div id="app">
 
   <header class="emp-header">
@@ -245,7 +245,7 @@
 
   <div class="emp-content">
 
-    <!-- ── INICIO ── -->
+    <!-- INICIO -->
     <div class="panel active" id="panel-inicio">
       <div class="stats-row" id="stats-row"></div>
       <div class="info-note">
@@ -263,7 +263,7 @@
       </div>
     </div>
 
-    <!-- ── SOLICITUDES ── -->
+    <!-- SOLICITUDES -->
     <div class="panel" id="panel-solicitudes">
       <div class="table-card">
         <div class="table-card-header">
@@ -287,7 +287,7 @@
       </div>
     </div>
 
-    <!-- ── CLIENTES ── -->
+    <!-- CLIENTES -->
     <div class="panel" id="panel-clientes">
       <div class="table-card">
         <div class="table-card-header">
@@ -314,7 +314,7 @@
   </div>
 </div>
 
-<!-- ── Modal: Registrar solicitud ── -->
+<!-- Modal: Registrar solicitud -->
 <div class="modal-overlay" id="modal-sol">
   <div class="modal">
     <div class="modal-header">
@@ -384,7 +384,7 @@
   </div>
 </div>
 
-<!-- ── Modal: Cliente activo ── -->
+<!-- Modal: Cliente activo -->
 <div class="modal-overlay" id="modal-cli">
   <div class="modal">
     <div class="modal-header">
@@ -448,7 +448,7 @@
   </div>
 </div>
 
-<!-- ── Modal: Ver detalle solicitud ── -->
+<!-- Modal: Ver detalle solicitud -->
 <div class="modal-overlay" id="modal-detalle">
   <div class="modal">
     <div class="modal-header">
@@ -463,13 +463,13 @@
 </div>
 
 <script>
-  // ── Config ──
+  // Config
   const EMP_PASSWORD = 'empleados2024';
   const SESSION_KEY  = 'cemp_session';
   const DB_SOL  = 'cemp_solicitudes';
   const DB_CLI  = 'cemp_clientes';
 
-  // ── Auth ──
+  // Auth
   function empLogin() {
     const pass = document.getElementById('emp-pass').value;
     const err  = document.getElementById('emp-err');
@@ -497,7 +497,7 @@
 
   if (sessionStorage.getItem(SESSION_KEY) === '1') showApp();
 
-  // ── DB helpers ──
+  // DB helpers
   function getDB(key) {
     try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; }
   }
@@ -508,7 +508,7 @@
     return d.toLocaleDateString('es-DO', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
-  // ── Tabs ──
+  // Tabs
   function showPanel(name, btn) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.emp-tab').forEach(t => t.classList.remove('active'));
@@ -519,7 +519,7 @@
     if (name === 'clientes')     renderClientes();
   }
 
-  // ── Estado badge ──
+  // Estado badge
   const ESTADO_CLASS = {
     pendiente: 'est-pendiente', revision: 'est-revision',
     aprobada:  'est-aprobada',  rechazada: 'est-rechazada',
@@ -534,7 +534,7 @@
     return `<span class="badge-estado ${ESTADO_CLASS[e] || ''}">${ESTADO_LABEL[e] || e}</span>`;
   }
 
-  // ── Renderizar Inicio ──
+  // Renderizar Inicio
   function renderInicio() {
     const sols = getDB(DB_SOL);
     const clis = getDB(DB_CLI);
@@ -577,7 +577,7 @@
     `).join('');
   }
 
-  // ── Renderizar Solicitudes ──
+  // Renderizar Solicitudes
   function renderSolicitudes() {
     const sols = getDB(DB_SOL).sort((a, b) => b.fecha.localeCompare(a.fecha));
     const tbody = document.getElementById('sol-table-body');
@@ -605,7 +605,7 @@
     `).join('');
   }
 
-  // ── Renderizar Clientes ──
+  // Renderizar Clientes
   function renderClientes() {
     const clis = getDB(DB_CLI).sort((a, b) => b.creado.localeCompare(a.creado));
     const tbody = document.getElementById('cli-table-body');
@@ -637,7 +637,7 @@
 
   function renderAll() { renderInicio(); }
 
-  // ── Solicitudes CRUD ──
+  // Solicitudes CRUD
   let editSolId = null;
 
   function openModalSolicitud(id) {
@@ -731,7 +731,7 @@
     renderInicio();
   }
 
-  // ── Clientes CRUD ──
+  // Clientes CRUD
   let editCliId = null;
 
   function openModalCliente(id) {
@@ -804,7 +804,7 @@
     renderInicio();
   }
 
-  // ── Modal helpers ──
+  // Modal helpers
   function closeModal(id) { document.getElementById(id).classList.remove('open'); }
   document.querySelectorAll('.modal-overlay').forEach(m => {
     m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });

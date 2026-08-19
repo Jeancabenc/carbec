@@ -8,7 +8,7 @@
   </head>
   <body>
 
-    <!-- ── Header ── -->
+    <!-- Header -->
     <header class="site-header">
       <div class="container header-inner">
         <a href="index.html" class="brand">
@@ -52,7 +52,7 @@
       </section>
     </main>
 
-    <!-- ── Footer ── -->
+    <!-- Footer -->
     <footer class="site-footer">
       <div class="container">
         <div class="footer-grid">
@@ -178,7 +178,7 @@
             </div>
           `;
 
-          /* ── Galería ── */
+          /* Galería */
           const mainImg  = document.getElementById('product-main-img');
           const mainWrap = document.getElementById('product-main-wrap');
           document.querySelectorAll('.gallery-thumb').forEach(btn => {
@@ -196,7 +196,7 @@
             });
           });
 
-          /* ── Qty controls ── */
+          /* Qty controls */
           const qtyInput = document.getElementById('qty-input');
           document.getElementById('qty-dec').addEventListener('click', () => {
             const v = parseInt(qtyInput.value, 10);
@@ -207,7 +207,7 @@
             if (v < 99) qtyInput.value = v + 1;
           });
 
-          /* ── Agregar al carrito ── */
+          /* Agregar al carrito */
           document.getElementById('add-to-cart-btn').addEventListener('click', function () {
             const qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
             if (window.cartAPI) {
