@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Portal de Empleados — Carbec Import S.R.L.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* ── Base ── */
+    body { background: #f0f4f8; min-height: 100vh; }
+
+    /* ── Login ── */
+    .emp-login-wrap {
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; padding: 2rem 1rem;
+      background: linear-gradient(135deg, #0b2e42 0%, #1a5373 60%, #2b7a9e 100%);
+    }
+    .emp-login-card {
+      background: #fff; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      width: 100%; max-width: 400px; overflow: hidden;
+    }
+    .emp-login-top {
+      background: linear-gradient(135deg, #0b2e42, #1a5373);
+      padding: 2rem; text-align: center; color: #fff;
+    }
+    .emp-login-top img { width: 56px; height: 56px; border-radius: 10px; margin-bottom: .75rem; display: block; margin-left: auto; margin-right: auto; }
+    .emp-login-top h1 { font-size: 1.15rem; margin: 0 0 .2rem; }
+    .emp-login-top p  { font-size: .8rem; opacity: .75; margin: 0; }
+    .emp-login-body { padding: 1.75rem 2rem 2rem; display: flex; flex-direction: column; gap: .85rem; }
+    .emp-login-body input {
+      padding: .65rem .9rem; border: 1.5px solid #e2e8f0; border-radius: 9px;
+      font-size: .9rem; font-family: inherit; outline: none;
+    }
+    .emp-login-body input:focus { border-color: #2b7a9e; }
+    .emp-login-btn {
+      background: #1a5373; color: #fff; border: none; border-radius: 9px;
+      padding: .75rem; font-size: .95rem; font-weight: 600; cursor: pointer;
+      font-family: inherit;
+    }
+    .emp-login-btn:hover { background: #0b2e42; }
+    .emp-login-err {
+      display: none; background: #fef2f2; border: 1px solid #fecaca;
+      color: #dc2626; border-radius: 7px; padding: .55rem .8rem; font-size: .82rem;
+    }
+
+    /* ── App shell ── */
+    #app { display: none; min-height: 100vh; }
+
+    .emp-header {
+      background: linear-gradient(135deg, #0b2e42, #1a5373);
+      color: #fff; padding: 0 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 58px; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    }
+    .emp-header .brand { display: flex; align-items: center; gap: .65rem; font-weight: 700; font-size: .95rem; }
+    .emp-header .brand img { width: 32px; height: 32px; border-radius: 6px; }
+    .emp-header .badge {
+      background: rgba(255,255,255,.15); font-size: .72rem; padding: .2rem .55rem;
+      border-radius: 20px; letter-spacing: .04em;
+    }
+    .emp-logout { background: rgba(255,255,255,.15); border: none; color: #fff;
+      border-radius: 7px; padding: .35rem .75rem; font-size: .8rem; cursor: pointer;
+      font-family: inherit;
+    }
+    .emp-logout:hover { background: rgba(255,255,255,.25); }
+
+    /* ── Tabs ── */
+    .emp-tabs {
+      display: flex; gap: 0; background: #fff;
+      border-bottom: 2px solid #e2e8f0;
+      padding: 0 1.5rem; overflow-x: auto;
+    }
+    .emp-tab {
+      padding: .85rem 1.2rem; font-size: .87rem; font-weight: 600;
+      color: #64748b; border: none; background: none; cursor: pointer;
+      border-bottom: 3px solid transparent; margin-bottom: -2px;
+      white-space: nowrap; font-family: inherit;
+    }
+    .emp-tab.active { color: #1a5373; border-bottom-color: #1a5373; }
+    .emp-tab:hover:not(.active) { color: #2b7a9e; }
+
+    /* ── Content ── */
+    .emp-content { padding: 1.75rem 1.5rem; max-width: 1100px; margin: 0 auto; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── Stats ── */
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card {
+      background: #fff; border-radius: 12px; padding: 1.25rem 1.5rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07); border-left: 4px solid #2b7a9e;
+    }
+    .stat-card.warn { border-left-color: #f59e0b; }
+    .stat-card.ok   { border-left-color: #10b981; }
+    .stat-card.info { border-left-color: #6366f1; }
+    .stat-num  { font-size: 2rem; font-weight: 800; color: #1e2532; line-height: 1; }
+    .stat-lbl  { font-size: .78rem; color: #64748b; margin-top: .2rem; }
+
+    /* ── Tables ── */
+    .table-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.07); overflow: hidden; }
+    .table-card-header {
+      padding: 1rem 1.25rem; display: flex; align-items: center;
+      justify-content: space-between; border-bottom: 1px solid #e2e8f0;
+    }
+    .table-card-header h3 { font-size: .95rem; color: #1e2532; margin: 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+    th {
+      background: #f8fafc; text-align: left; padding: .65rem 1rem;
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: #64748b; border-bottom: 1px solid #e2e8f0;
+    }
+    td { padding: .7rem 1rem; border-bottom: 1px solid #f1f5f9; color: #1e2532; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+
+    /* ── Badges de estado ── */
+    .badge-estado {
+      display: inline-block; padding: .22rem .65rem; border-radius: 20px;
+      font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+    }
+    .est-pendiente   { background: #fef3c7; color: #92400e; }
+    .est-revision    { background: #dbeafe; color: #1e40af; }
+    .est-aprobada    { background: #d1fae5; color: #065f46; }
+    .est-rechazada   { background: #fee2e2; color: #991b1b; }
+    .est-activo      { background: #d1fae5; color: #065f46; }
+    .est-inactivo    { background: #f1f5f9; color: #64748b; }
+
+    /* ── Acciones de tabla ── */
+    .tbl-actions { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .btn-tbl {
+      padding: .28rem .65rem; font-size: .75rem; border-radius: 6px;
+      border: 1.5px solid; cursor: pointer; font-family: inherit; font-weight: 600;
+    }
+    .btn-tbl-primary  { border-color: #2b7a9e; color: #2b7a9e; background: transparent; }
+    .btn-tbl-primary:hover  { background: #2b7a9e; color: #fff; }
+    .btn-tbl-success  { border-color: #10b981; color: #065f46; background: transparent; }
+    .btn-tbl-success:hover  { background: #10b981; color: #fff; }
+    .btn-tbl-danger   { border-color: #ef4444; color: #991b1b; background: transparent; }
+    .btn-tbl-danger:hover   { background: #ef4444; color: #fff; }
+    .btn-tbl-warn     { border-color: #f59e0b; color: #92400e; background: transparent; }
+    .btn-tbl-warn:hover     { background: #f59e0b; color: #fff; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.45); z-index: 200;
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 16px; width: 100%; max-width: 520px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden;
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #0b2e42, #1a5373);
+      color: #fff; padding: 1.1rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h3 { margin: 0; font-size: 1rem; }
+    .modal-close { background: none; border: none; color: #fff; font-size: 1.4rem; cursor: pointer; line-height: 1; }
+    .modal-body { padding: 1.5rem; display: flex; flex-direction: column; gap: .85rem; }
+    .modal-body .fg { display: flex; flex-direction: column; gap: .25rem; }
+    .modal-body .fg label { font-size: .8rem; font-weight: 600; color: #1e2532; }
+    .modal-body .fg input, .modal-body .fg select {
+      padding: .6rem .85rem; border: 1.5px solid #e2e8f0; border-radius: 8px;
+      font-size: .875rem; font-family: inherit; outline: none;
+    }
+    .modal-body .fg input:focus, .modal-body .fg select:focus { border-color: #2b7a9e; }
+    .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #e2e8f0; display: flex; gap: .6rem; justify-content: flex-end; }
+    .btn-modal { padding: .6rem 1.2rem; border-radius: 8px; font-size: .875rem; font-weight: 600; cursor: pointer; font-family: inherit; border: none; }
+    .btn-modal-primary { background: #1a5373; color: #fff; }
+    .btn-modal-primary:hover { background: #0b2e42; }
+    .btn-modal-cancel  { background: #f1f5f9; color: #64748b; }
+    .btn-modal-cancel:hover { background: #e2e8f0; }
+
+    /* ── Solicitud detalle ── */
+    .sol-detail { display: flex; flex-direction: column; gap: .5rem; font-size: .85rem; }
+    .sol-detail dt { font-weight: 700; color: #64748b; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .1rem; }
+    .sol-detail dd { color: #1e2532; margin: 0 0 .5rem; }
+    .sol-section-title { font-weight: 700; color: #1a5373; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; margin: .75rem 0 .25rem; border-bottom: 1px solid #e2e8f0; padding-bottom: .3rem; }
+
+    /* ── Vacío ── */
+    .empty-row td { text-align: center; color: #94a3b8; padding: 2.5rem; font-size: .85rem; }
+
+    /* ── Add button ── */
+    .btn-add {
+      background: #1a5373; color: #fff; border: none; border-radius: 9px;
+      padding: .5rem 1.1rem; font-size: .85rem; font-weight: 600; cursor: pointer;
+      font-family: inherit; display: inline-flex; align-items: center; gap: .4rem;
+    }
+    .btn-add:hover { background: #0b2e42; }
+
+    /* ── Notas ── */
+    .info-note {
+      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 9px;
+      padding: .75rem 1rem; font-size: .82rem; color: #1e40af; margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 600px) {
+      .emp-content { padding: 1rem; }
+      .modal-row { grid-template-columns: 1fr; }
+      th:nth-child(3), td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Login ── -->
+<div id="login-screen">
+  <div class="emp-login-wrap">
+    <div class="emp-login-card">
+      <div class="emp-login-top">
+        <img src="img/logo.jpg" alt="Carbec" />
+        <h1>Portal de Empleados</h1>
+        <p>Carbec Import S.R.L. — Acceso interno</p>
+      </div>
+      <div class="emp-login-body">
+        <div id="emp-err" class="emp-login-err"></div>
+        <input type="password" id="emp-pass" placeholder="Contraseña de empleado" autocomplete="current-password" />
+        <button class="emp-login-btn" onclick="empLogin()">Entrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── App ── -->
+<div id="app">
+
+  <header class="emp-header">
+    <div class="brand">
+      <img src="img/logo.jpg" alt="Carbec" />
+      <span>Carbec Import S.R.L.</span>
+      <span class="badge">Empleados</span>
+    </div>
+    <button class="emp-logout" onclick="empLogout()">Cerrar sesión</button>
+  </header>
+
+  <div class="emp-tabs">
+    <button class="emp-tab active" onclick="showPanel('inicio', this)">Inicio</button>
+    <button class="emp-tab" onclick="showPanel('solicitudes', this)">Solicitudes de clientes</button>
+    <button class="emp-tab" onclick="showPanel('clientes', this)">Clientes activos</button>
+  </div>
+
+  <div class="emp-content">
+
+    <!-- ── INICIO ── -->
+    <div class="panel active" id="panel-inicio">
+      <div class="stats-row" id="stats-row"></div>
+      <div class="info-note">
+        <strong>Flujo de trabajo:</strong> Las solicitudes de nuevos clientes llegan por WhatsApp o correo desde la página web.
+        Regístralas en la pestaña <em>Solicitudes</em>, revísalas y apruébalas para luego crear la cuenta en <em>Clientes activos</em>.
+      </div>
+      <div class="table-card">
+        <div class="table-card-header">
+          <h3>Solicitudes recientes</h3>
+        </div>
+        <table id="recent-sol-table">
+          <thead><tr><th>Negocio</th><th>Teléfono</th><th>Fecha</th><th>Estado</th></tr></thead>
+          <tbody id="recent-sol-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── SOLICITUDES ── -->
+    <div class="panel" id="panel-solicitudes">
+      <div class="table-card">
+        <div class="table-card-header">
+          <h3>Solicitudes de nuevos clientes</h3>
+          <button class="btn-add" onclick="openModalSolicitud()">+ Registrar solicitud</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Negocio</th>
+              <th>Propietario</th>
+              <th>Teléfono</th>
+              <th>Tipo cliente</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="sol-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── CLIENTES ── -->
+    <div class="panel" id="panel-clientes">
+      <div class="table-card">
+        <div class="table-card-header">
+          <h3>Clientes registrados</h3>
+          <button class="btn-add" onclick="openModalCliente()">+ Agregar cliente</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Negocio</th>
+              <th>Propietario</th>
+              <th>Correo / Usuario</th>
+              <th>Tipo</th>
+              <th>Creado</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="cli-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Modal: Registrar solicitud ── -->
+<div class="modal-overlay" id="modal-sol">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-sol-title">Registrar solicitud</h3>
+      <button class="modal-close" onclick="closeModal('modal-sol')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg">
+        <label>Nombre del negocio *</label>
+        <input id="ms-negocio" type="text" placeholder="Nombre del negocio" />
+      </div>
+      <div class="modal-row">
+        <div class="fg">
+          <label>Propietario</label>
+          <input id="ms-propietario" type="text" placeholder="Nombre completo" />
+        </div>
+        <div class="fg">
+          <label>Tipo de cliente</label>
+          <select id="ms-tipo">
+            <option value="">Sin especificar</option>
+            <option>Mayorista</option>
+            <option>Minorista</option>
+            <option>Distribuidor</option>
+            <option>Canal Modernos (Supermercado / Minimarket)</option>
+            <option>Tiendas</option>
+            <option>Papelería / Librería</option>
+            <option>Repuestos</option>
+            <option>Ferretería</option>
+            <option>Hotel</option>
+            <option>Farmacéutico</option>
+            <option>Otros</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="fg">
+          <label>Teléfono</label>
+          <input id="ms-tel" type="tel" placeholder="809-XXX-XXXX" />
+        </div>
+        <div class="fg">
+          <label>Correo</label>
+          <input id="ms-email" type="email" placeholder="correo@negocio.com" />
+        </div>
+      </div>
+      <div class="fg">
+        <label>RNC</label>
+        <input id="ms-rnc" type="text" placeholder="000-00000-0" />
+      </div>
+      <div class="fg">
+        <label>Estado</label>
+        <select id="ms-estado">
+          <option value="pendiente">Pendiente</option>
+          <option value="revision">En revisión</option>
+          <option value="aprobada">Aprobada</option>
+          <option value="rechazada">Rechazada</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Notas internas</label>
+        <input id="ms-notas" type="text" placeholder="Observaciones..." />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal btn-modal-cancel" onclick="closeModal('modal-sol')">Cancelar</button>
+      <button class="btn-modal btn-modal-primary" onclick="guardarSolicitud()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: Cliente activo ── -->
+<div class="modal-overlay" id="modal-cli">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-cli-title">Agregar cliente</h3>
+      <button class="modal-close" onclick="closeModal('modal-cli')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg">
+        <label>Nombre del negocio *</label>
+        <input id="mc-negocio" type="text" placeholder="Nombre del negocio" />
+      </div>
+      <div class="modal-row">
+        <div class="fg">
+          <label>Propietario</label>
+          <input id="mc-propietario" type="text" placeholder="Nombre completo" />
+        </div>
+        <div class="fg">
+          <label>Tipo de cliente</label>
+          <select id="mc-tipo">
+            <option value="">Sin especificar</option>
+            <option>Mayorista</option>
+            <option>Minorista</option>
+            <option>Distribuidor</option>
+            <option>Canal Modernos (Supermercado / Minimarket)</option>
+            <option>Tiendas</option>
+            <option>Papelería / Librería</option>
+            <option>Repuestos</option>
+            <option>Ferretería</option>
+            <option>Hotel</option>
+            <option>Farmacéutico</option>
+            <option>Otros</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="fg">
+          <label>Correo (usuario de acceso) *</label>
+          <input id="mc-email" type="email" placeholder="correo@negocio.com" />
+        </div>
+        <div class="fg">
+          <label>Teléfono</label>
+          <input id="mc-tel" type="tel" placeholder="809-XXX-XXXX" />
+        </div>
+      </div>
+      <div class="fg">
+        <label>Estado</label>
+        <select id="mc-estado">
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Notas internas</label>
+        <input id="mc-notas" type="text" placeholder="Observaciones..." />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal btn-modal-cancel" onclick="closeModal('modal-cli')">Cancelar</button>
+      <button class="btn-modal btn-modal-primary" onclick="guardarCliente()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: Ver detalle solicitud ── -->
+<div class="modal-overlay" id="modal-detalle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Detalle de solicitud</h3>
+      <button class="modal-close" onclick="closeModal('modal-detalle')">×</button>
+    </div>
+    <div class="modal-body" id="modal-detalle-body"></div>
+    <div class="modal-footer">
+      <button class="btn-modal btn-modal-cancel" onclick="closeModal('modal-detalle')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Config ──
+  const EMP_PASSWORD = 'empleados2024';
+  const SESSION_KEY  = 'cemp_session';
+  const DB_SOL  = 'cemp_solicitudes';
+  const DB_CLI  = 'cemp_clientes';
+
+  // ── Auth ──
+  function empLogin() {
+    const pass = document.getElementById('emp-pass').value;
+    const err  = document.getElementById('emp-err');
+    if (pass === EMP_PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      showApp();
+    } else {
+      err.textContent = 'Contraseña incorrecta.';
+      err.style.display = 'block';
+    }
+  }
+  document.getElementById('emp-pass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') empLogin();
+  });
+  function empLogout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    location.reload();
+  }
+
+  function showApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    renderAll();
+  }
+
+  if (sessionStorage.getItem(SESSION_KEY) === '1') showApp();
+
+  // ── DB helpers ──
+  function getDB(key) {
+    try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; }
+  }
+  function saveDB(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function fmtFecha(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString('es-DO', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  // ── Tabs ──
+  function showPanel(name, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.emp-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    btn.classList.add('active');
+    if (name === 'inicio')       renderInicio();
+    if (name === 'solicitudes')  renderSolicitudes();
+    if (name === 'clientes')     renderClientes();
+  }
+
+  // ── Estado badge ──
+  const ESTADO_CLASS = {
+    pendiente: 'est-pendiente', revision: 'est-revision',
+    aprobada:  'est-aprobada',  rechazada: 'est-rechazada',
+    activo: 'est-activo', inactivo: 'est-inactivo'
+  };
+  const ESTADO_LABEL = {
+    pendiente: 'Pendiente', revision: 'En revisión',
+    aprobada: 'Aprobada', rechazada: 'Rechazada',
+    activo: 'Activo', inactivo: 'Inactivo'
+  };
+  function badgeEstado(e) {
+    return `<span class="badge-estado ${ESTADO_CLASS[e] || ''}">${ESTADO_LABEL[e] || e}</span>`;
+  }
+
+  // ── Renderizar Inicio ──
+  function renderInicio() {
+    const sols = getDB(DB_SOL);
+    const clis = getDB(DB_CLI);
+    const pendientes = sols.filter(s => s.estado === 'pendiente').length;
+    const enRevision = sols.filter(s => s.estado === 'revision').length;
+    const activos    = clis.filter(c => c.estado === 'activo').length;
+
+    document.getElementById('stats-row').innerHTML = `
+      <div class="stat-card warn">
+        <div class="stat-num">${pendientes}</div>
+        <div class="stat-lbl">Solicitudes pendientes</div>
+      </div>
+      <div class="stat-card info">
+        <div class="stat-num">${enRevision}</div>
+        <div class="stat-lbl">En revisión</div>
+      </div>
+      <div class="stat-card ok">
+        <div class="stat-num">${activos}</div>
+        <div class="stat-lbl">Clientes activos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">${sols.length}</div>
+        <div class="stat-lbl">Total solicitudes</div>
+      </div>
+    `;
+
+    const recientes = [...sols].sort((a, b) => b.fecha.localeCompare(a.fecha)).slice(0, 5);
+    const tbody = document.getElementById('recent-sol-body');
+    if (!recientes.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">No hay solicitudes registradas.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = recientes.map(s => `
+      <tr>
+        <td><strong>${s.negocio}</strong></td>
+        <td>${s.tel || '—'}</td>
+        <td>${fmtFecha(s.fecha)}</td>
+        <td>${badgeEstado(s.estado)}</td>
+      </tr>
+    `).join('');
+  }
+
+  // ── Renderizar Solicitudes ──
+  function renderSolicitudes() {
+    const sols = getDB(DB_SOL).sort((a, b) => b.fecha.localeCompare(a.fecha));
+    const tbody = document.getElementById('sol-table-body');
+    if (!sols.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No hay solicitudes registradas. Usa el botón para agregar.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = sols.map(s => `
+      <tr>
+        <td><strong>${s.negocio}</strong></td>
+        <td>${s.propietario || '—'}</td>
+        <td>${s.tel || '—'}</td>
+        <td>${s.tipo || '—'}</td>
+        <td>${fmtFecha(s.fecha)}</td>
+        <td>${badgeEstado(s.estado)}</td>
+        <td>
+          <div class="tbl-actions">
+            <button class="btn-tbl btn-tbl-primary" onclick="verSolicitud('${s.id}')">Ver</button>
+            <button class="btn-tbl btn-tbl-warn" onclick="editarSolicitud('${s.id}')">Editar</button>
+            ${s.estado !== 'aprobada' ? `<button class="btn-tbl btn-tbl-success" onclick="aprobarSolicitud('${s.id}')">Aprobar</button>` : ''}
+            <button class="btn-tbl btn-tbl-danger" onclick="eliminarSolicitud('${s.id}')">✕</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // ── Renderizar Clientes ──
+  function renderClientes() {
+    const clis = getDB(DB_CLI).sort((a, b) => b.creado.localeCompare(a.creado));
+    const tbody = document.getElementById('cli-table-body');
+    if (!clis.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No hay clientes registrados.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = clis.map(c => `
+      <tr>
+        <td><strong>${c.negocio}</strong></td>
+        <td>${c.propietario || '—'}</td>
+        <td>${c.email || '—'}</td>
+        <td>${c.tipo || '—'}</td>
+        <td>${fmtFecha(c.creado)}</td>
+        <td>${badgeEstado(c.estado)}</td>
+        <td>
+          <div class="tbl-actions">
+            <button class="btn-tbl btn-tbl-warn" onclick="editarCliente('${c.id}')">Editar</button>
+            <button class="btn-tbl ${c.estado === 'activo' ? 'btn-tbl-danger' : 'btn-tbl-success'}"
+              onclick="toggleCliente('${c.id}')">
+              ${c.estado === 'activo' ? 'Desactivar' : 'Activar'}
+            </button>
+            <button class="btn-tbl btn-tbl-danger" onclick="eliminarCliente('${c.id}')">✕</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function renderAll() { renderInicio(); }
+
+  // ── Solicitudes CRUD ──
+  let editSolId = null;
+
+  function openModalSolicitud(id) {
+    editSolId = id || null;
+    const title = document.getElementById('modal-sol-title');
+    title.textContent = id ? 'Editar solicitud' : 'Registrar solicitud';
+    const fields = ['negocio','propietario','tipo','tel','email','rnc','estado','notas'];
+    if (id) {
+      const s = getDB(DB_SOL).find(x => x.id === id) || {};
+      document.getElementById('ms-negocio').value     = s.negocio || '';
+      document.getElementById('ms-propietario').value = s.propietario || '';
+      document.getElementById('ms-tipo').value        = s.tipo || '';
+      document.getElementById('ms-tel').value         = s.tel || '';
+      document.getElementById('ms-email').value       = s.email || '';
+      document.getElementById('ms-rnc').value         = s.rnc || '';
+      document.getElementById('ms-estado').value      = s.estado || 'pendiente';
+      document.getElementById('ms-notas').value       = s.notas || '';
+    } else {
+      fields.forEach(f => {
+        const el = document.getElementById('ms-' + f);
+        if (el) el.value = f === 'estado' ? 'pendiente' : '';
+      });
+    }
+    document.getElementById('modal-sol').classList.add('open');
+  }
+
+  function editarSolicitud(id) { openModalSolicitud(id); }
+
+  function guardarSolicitud() {
+    const negocio = document.getElementById('ms-negocio').value.trim();
+    if (!negocio) { alert('El nombre del negocio es obligatorio.'); return; }
+    const sols = getDB(DB_SOL);
+    const data = {
+      id:          editSolId || uid(),
+      negocio,
+      propietario: document.getElementById('ms-propietario').value.trim(),
+      tipo:        document.getElementById('ms-tipo').value,
+      tel:         document.getElementById('ms-tel').value.trim(),
+      email:       document.getElementById('ms-email').value.trim(),
+      rnc:         document.getElementById('ms-rnc').value.trim(),
+      estado:      document.getElementById('ms-estado').value,
+      notas:       document.getElementById('ms-notas').value.trim(),
+      fecha:       editSolId ? (sols.find(s => s.id === editSolId)?.fecha || new Date().toISOString()) : new Date().toISOString()
+    };
+    if (editSolId) {
+      const idx = sols.findIndex(s => s.id === editSolId);
+      if (idx >= 0) sols[idx] = data;
+    } else {
+      sols.unshift(data);
+    }
+    saveDB(DB_SOL, sols);
+    closeModal('modal-sol');
+    renderSolicitudes();
+    renderInicio();
+  }
+
+  function verSolicitud(id) {
+    const s = getDB(DB_SOL).find(x => x.id === id);
+    if (!s) return;
+    document.getElementById('modal-detalle-body').innerHTML = `
+      <dl class="sol-detail">
+        <div class="sol-section-title">Datos del negocio</div>
+        <dt>Negocio</dt><dd>${s.negocio}</dd>
+        ${s.propietario ? `<dt>Propietario</dt><dd>${s.propietario}</dd>` : ''}
+        ${s.tipo ? `<dt>Tipo de cliente</dt><dd>${s.tipo}</dd>` : ''}
+        ${s.rnc ? `<dt>RNC</dt><dd>${s.rnc}</dd>` : ''}
+        ${s.tel ? `<dt>Teléfono</dt><dd>${s.tel}</dd>` : ''}
+        ${s.email ? `<dt>Correo</dt><dd>${s.email}</dd>` : ''}
+        <div class="sol-section-title">Gestión</div>
+        <dt>Estado</dt><dd>${badgeEstado(s.estado)}</dd>
+        <dt>Registrada</dt><dd>${fmtFecha(s.fecha)}</dd>
+        ${s.notas ? `<dt>Notas</dt><dd>${s.notas}</dd>` : ''}
+      </dl>
+    `;
+    document.getElementById('modal-detalle').classList.add('open');
+  }
+
+  function aprobarSolicitud(id) {
+    if (!confirm('¿Marcar esta solicitud como aprobada?')) return;
+    const sols = getDB(DB_SOL);
+    const idx = sols.findIndex(s => s.id === id);
+    if (idx >= 0) { sols[idx].estado = 'aprobada'; saveDB(DB_SOL, sols); }
+    renderSolicitudes();
+    renderInicio();
+  }
+
+  function eliminarSolicitud(id) {
+    if (!confirm('¿Eliminar esta solicitud? Esta acción no se puede deshacer.')) return;
+    saveDB(DB_SOL, getDB(DB_SOL).filter(s => s.id !== id));
+    renderSolicitudes();
+    renderInicio();
+  }
+
+  // ── Clientes CRUD ──
+  let editCliId = null;
+
+  function openModalCliente(id) {
+    editCliId = id || null;
+    document.getElementById('modal-cli-title').textContent = id ? 'Editar cliente' : 'Agregar cliente';
+    if (id) {
+      const c = getDB(DB_CLI).find(x => x.id === id) || {};
+      document.getElementById('mc-negocio').value     = c.negocio || '';
+      document.getElementById('mc-propietario').value = c.propietario || '';
+      document.getElementById('mc-tipo').value        = c.tipo || '';
+      document.getElementById('mc-email').value       = c.email || '';
+      document.getElementById('mc-tel').value         = c.tel || '';
+      document.getElementById('mc-estado').value      = c.estado || 'activo';
+      document.getElementById('mc-notas').value       = c.notas || '';
+    } else {
+      ['negocio','propietario','tipo','email','tel','notas'].forEach(f => {
+        const el = document.getElementById('mc-' + f);
+        if (el) el.value = '';
+      });
+      document.getElementById('mc-estado').value = 'activo';
+    }
+    document.getElementById('modal-cli').classList.add('open');
+  }
+
+  function editarCliente(id) { openModalCliente(id); }
+
+  function guardarCliente() {
+    const negocio = document.getElementById('mc-negocio').value.trim();
+    const email   = document.getElementById('mc-email').value.trim();
+    if (!negocio || !email) { alert('Nombre del negocio y correo son obligatorios.'); return; }
+    const clis = getDB(DB_CLI);
+    const data = {
+      id:          editCliId || uid(),
+      negocio,
+      propietario: document.getElementById('mc-propietario').value.trim(),
+      tipo:        document.getElementById('mc-tipo').value,
+      email,
+      tel:         document.getElementById('mc-tel').value.trim(),
+      estado:      document.getElementById('mc-estado').value,
+      notas:       document.getElementById('mc-notas').value.trim(),
+      creado:      editCliId ? (clis.find(c => c.id === editCliId)?.creado || new Date().toISOString()) : new Date().toISOString()
+    };
+    if (editCliId) {
+      const idx = clis.findIndex(c => c.id === editCliId);
+      if (idx >= 0) clis[idx] = data;
+    } else {
+      clis.unshift(data);
+    }
+    saveDB(DB_CLI, clis);
+    closeModal('modal-cli');
+    renderClientes();
+    renderInicio();
+  }
+
+  function toggleCliente(id) {
+    const clis = getDB(DB_CLI);
+    const idx  = clis.findIndex(c => c.id === id);
+    if (idx >= 0) {
+      clis[idx].estado = clis[idx].estado === 'activo' ? 'inactivo' : 'activo';
+      saveDB(DB_CLI, clis);
+      renderClientes();
+      renderInicio();
+    }
+  }
+
+  function eliminarCliente(id) {
+    if (!confirm('¿Eliminar este cliente? Esta acción no se puede deshacer.')) return;
+    saveDB(DB_CLI, getDB(DB_CLI).filter(c => c.id !== id));
+    renderClientes();
+    renderInicio();
+  }
+
+  // ── Modal helpers ──
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+  });
+</script>
+</body>
+</html>
