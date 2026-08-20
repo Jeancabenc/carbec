@@ -9,42 +9,8 @@
     /* Base */
     body { background: #f0f4f8; min-height: 100vh; }
 
-    /* Login */
-    .emp-login-wrap {
-      min-height: 100vh; display: flex; align-items: center;
-      justify-content: center; padding: 2rem 1rem;
-      background: linear-gradient(135deg, #0b2e42 0%, #1a5373 60%, #2b7a9e 100%);
-    }
-    .emp-login-card {
-      background: #fff; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.25);
-      width: 100%; max-width: 400px; overflow: hidden;
-    }
-    .emp-login-top {
-      background: linear-gradient(135deg, #0b2e42, #1a5373);
-      padding: 2rem; text-align: center; color: #fff;
-    }
-    .emp-login-top img { width: 56px; height: 56px; border-radius: 10px; margin-bottom: .75rem; display: block; margin-left: auto; margin-right: auto; }
-    .emp-login-top h1 { font-size: 1.15rem; margin: 0 0 .2rem; }
-    .emp-login-top p  { font-size: .8rem; opacity: .75; margin: 0; }
-    .emp-login-body { padding: 1.75rem 2rem 2rem; display: flex; flex-direction: column; gap: .85rem; }
-    .emp-login-body input {
-      padding: .65rem .9rem; border: 1.5px solid #e2e8f0; border-radius: 9px;
-      font-size: .9rem; font-family: inherit; outline: none;
-    }
-    .emp-login-body input:focus { border-color: #2b7a9e; }
-    .emp-login-btn {
-      background: #1a5373; color: #fff; border: none; border-radius: 9px;
-      padding: .75rem; font-size: .95rem; font-weight: 600; cursor: pointer;
-      font-family: inherit;
-    }
-    .emp-login-btn:hover { background: #0b2e42; }
-    .emp-login-err {
-      display: none; background: #fef2f2; border: 1px solid #fecaca;
-      color: #dc2626; border-radius: 7px; padding: .55rem .8rem; font-size: .82rem;
-    }
-
     /* App shell */
-    #app { display: none; min-height: 100vh; }
+    #app { min-height: 100vh; }
 
     .emp-header {
       background: linear-gradient(135deg, #0b2e42, #1a5373);
@@ -198,34 +164,30 @@
       padding: .75rem 1rem; font-size: .82rem; color: #1e40af; margin-bottom: 1.25rem;
     }
 
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+    @media (max-width: 768px) {
+      .emp-header .brand span:not(.badge) { display: none; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+    }
     @media (max-width: 600px) {
-      .emp-content { padding: 1rem; }
+      .emp-content { padding: .75rem; }
       .modal-row { grid-template-columns: 1fr; }
-      th:nth-child(3), td:nth-child(3) { display: none; }
+      .modal { border-radius: 12px; }
+      .modal-body { padding: 1rem; }
+      .modal-footer { padding: .75rem 1rem; }
+      .emp-tabs { padding: 0 .5rem; }
+      .emp-tab { padding: .75rem .85rem; font-size: .82rem; }
+      .stats-row { grid-template-columns: 1fr 1fr; gap: .65rem; }
+      .stat-card { padding: 1rem; }
+      .stat-num { font-size: 1.6rem; }
+      th:nth-child(4), td:nth-child(4),
+      th:nth-child(5), td:nth-child(5) { display: none; }
     }
   </style>
 </head>
 <body>
 
-<!-- Login -->
-<div id="login-screen">
-  <div class="emp-login-wrap">
-    <div class="emp-login-card">
-      <div class="emp-login-top">
-        <img src="img/logo.jpg" alt="Carbec" />
-        <h1>Portal de Empleados</h1>
-        <p>Carbec Import S.R.L. — Acceso interno</p>
-      </div>
-      <div class="emp-login-body">
-        <div id="emp-err" class="emp-login-err"></div>
-        <input type="password" id="emp-pass" placeholder="Contraseña de empleado" autocomplete="current-password" />
-        <button class="emp-login-btn" onclick="empLogin()">Entrar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- App -->
 <div id="app">
 
   <header class="emp-header">
@@ -256,10 +218,12 @@
         <div class="table-card-header">
           <h3>Solicitudes recientes</h3>
         </div>
+        <div class="table-scroll">
         <table id="recent-sol-table">
           <thead><tr><th>Negocio</th><th>Teléfono</th><th>Fecha</th><th>Estado</th></tr></thead>
           <tbody id="recent-sol-body"></tbody>
         </table>
+        </div>
       </div>
     </div>
 
@@ -270,7 +234,7 @@
           <h3>Solicitudes de nuevos clientes</h3>
           <button class="btn-add" onclick="openModalSolicitud()">+ Registrar solicitud</button>
         </div>
-        <table>
+        <div class="table-scroll"><table>
           <thead>
             <tr>
               <th>Negocio</th>
@@ -283,7 +247,7 @@
             </tr>
           </thead>
           <tbody id="sol-table-body"></tbody>
-        </table>
+        </table></div>
       </div>
     </div>
 
@@ -294,7 +258,7 @@
           <h3>Clientes registrados</h3>
           <button class="btn-add" onclick="openModalCliente()">+ Agregar cliente</button>
         </div>
-        <table>
+        <div class="table-scroll"><table>
           <thead>
             <tr>
               <th>Negocio</th>
@@ -307,7 +271,7 @@
             </tr>
           </thead>
           <tbody id="cli-table-body"></tbody>
-        </table>
+        </table></div>
       </div>
     </div>
 
@@ -462,40 +426,23 @@
   </div>
 </div>
 
+<script src="js/api.js"></script>
 <script>
-  // Config
-  const EMP_PASSWORD = 'empleados2024';
-  const SESSION_KEY  = 'cemp_session';
-  const DB_SOL  = 'cemp_solicitudes';
-  const DB_CLI  = 'cemp_clientes';
+  const DB_SOL = 'cemp_solicitudes';
+  const DB_CLI = 'cemp_clientes';
 
-  // Auth
-  function empLogin() {
-    const pass = document.getElementById('emp-pass').value;
-    const err  = document.getElementById('emp-err');
-    if (pass === EMP_PASSWORD) {
-      sessionStorage.setItem(SESSION_KEY, '1');
-      showApp();
-    } else {
-      err.textContent = 'Contraseña incorrecta.';
-      err.style.display = 'block';
-    }
+  // Verificar sesión — el backend redirige aquí tras login de empleado
+  if (typeof window.api !== 'undefined' && !window.api.isLoggedIn()) {
+    window.location.replace('login.html');
   }
-  document.getElementById('emp-pass').addEventListener('keydown', e => {
-    if (e.key === 'Enter') empLogin();
-  });
+
   function empLogout() {
-    sessionStorage.removeItem(SESSION_KEY);
-    location.reload();
+    if (typeof window.api !== 'undefined') window.api.logout?.();
+    localStorage.removeItem('carbec_token');
+    window.location.replace('login.html');
   }
 
-  function showApp() {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    renderAll();
-  }
-
-  if (sessionStorage.getItem(SESSION_KEY) === '1') showApp();
+  renderAll();
 
   // DB helpers
   function getDB(key) {
